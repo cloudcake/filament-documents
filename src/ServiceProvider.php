@@ -2,6 +2,8 @@
 
 namespace Cloudcake\Documents;
 
+use Livewire\Livewire;
+
 class ServiceProvider extends \Illuminate\Support\ServiceProvider
 {
 
@@ -9,6 +11,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
     {
         $this->bootAssets();
         $this->bootLanguage();
+        $this->bootMigrations();
         $this->bootViews();
     }
 
@@ -24,5 +27,17 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
     private function bootViews(): void
     {
         $this->loadViewsFrom(__DIR__ . '/../resources/views', 'cloudcake-documents');
+
+//        Livewire::addNamespace(
+//            namespace: 'cloudcake-documents',
+//            classNamespace: 'Cloudcake\\Documents\\Livewire\\',
+//            classPath: __DIR__ . '/Livewire',
+//            classViewPath: __DIR__ . '/../resources/views/livewire',
+//        );
+    }
+
+    private function bootMigrations(): void
+    {
+        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
     }
 }

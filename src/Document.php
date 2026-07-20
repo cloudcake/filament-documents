@@ -91,7 +91,6 @@ class Document implements Plugin
                     );
 
                     $panel
-                        ->spa()
                         ->renderHook(PanelsRenderHook::TOPBAR_LOGO_AFTER, fn(): string => Blade::render(
                             "@livewire('" . ContentSearch::class . "', [])"
                         ))
