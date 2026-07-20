@@ -1,0 +1,253 @@
+@import '../../vendor/filament/filament/resources/css/theme.css';
+@import './effects/index.css';
+
+@source '../../src/Documents/Livewire/**/*';
+
+.featured .fi-badge-label-ctn {
+    @apply text-white
+}
+
+.fi-active.featured .fi-badge-label-ctn {
+    @apply animate-gradient bg-[length:200%_100%] bg-linear-to-r from-indigo-500 via-indigo-950 to-indigo-500 dark:from-gray-950 dark:via-gray-500 dark:to-gray-950 bg-clip-text text-transparent
+}
+
+.document-page {
+    .pagination-previous-button {
+        @apply simple-block;
+    }
+
+    .pagination-next-button {
+        @apply simple-block;
+    }
+
+    .fi-section-header-heading {
+        @apply select-none;
+    }
+
+    .fi-page-header-main-ctn {
+        row-gap: 0.5rem;
+    }
+
+    .fi-header-heading {
+        @apply text-4xl select-none;
+    }
+
+    .fi-section-content-ctn,
+    .fi-section-footer {
+        @apply border-0;
+    }
+
+    .rating-system-block {
+        @apply styled-block text-gray-500 my-10 py-5 dark:text-gray-500 px-10 flex items-center justify-between w-full rounded-full;
+    }
+
+    .fi-section, .fi-callout {
+        @apply my-3;
+    }
+
+    .fi-section {
+        @apply px-3
+    }
+
+    .fi-sc-component {
+        @apply !my-0 !py-0;
+    }
+
+    .fi-sc.fi-sc-has-gap {
+        @apply !my-0;
+    }
+
+    .fi-callout-heading {
+        @apply font-bold;
+    }
+
+    .documentation {
+        a:not([class]) u {
+            @apply no-underline;
+        }
+
+        a:not([class]) * {
+            @apply no-underline font-medium border-b-1 border-b-primary-500 dark:border-b-primary-400 transition-colors duration-300;
+        }
+
+        h1:not([class]) {
+            @apply text-4xl mt-10 font-bold text-gradient-simple;
+        }
+
+        h2:not([class]) {
+            @apply text-3xl mt-8 font-semibold text-gradient-simple;
+        }
+
+        h3:not([class]) {
+            @apply text-2xl mt-7 font-semibold text-gradient-simple;
+        }
+
+        h4:not([class]) {
+            @apply text-xl mt-6 font-semibold text-gradient-simple;
+        }
+
+        p:not([class]) {
+            @apply my-5 text-sm text-gray-600 dark:text-gray-300 font-normal;
+        }
+
+        ol {
+            list-style: auto !important;
+        }
+
+        ol:not([class]) {
+            list-style-type: decimal !important;
+            list-style-position: outside;
+
+            @apply my-8 pl-8 space-y-5 list-decimal;
+        }
+
+        ol:not([class]) > li {
+            @apply pl-3 text-base leading-8;
+        }
+
+        ol:not([class]) > li::marker,
+        ul:not([class]) > li::marker {
+            @apply text-gray-400 dark:text-gray-900;
+        }
+
+        ol:not([class]) > li > p:first-child {
+            @apply mt-0;
+        }
+
+        ol:not([class]) > li > *:last-child {
+            @apply mb-0;
+        }
+
+        ol:not([class]) ol:not([class]) {
+            @apply mt-4 pl-7 space-y-3 list-[lower-alpha];
+        }
+
+        ol:not([class]) ol:not([class]) ol:not([class]) {
+            @apply list-[lower-roman];
+        }
+
+        ul:not([class]) {
+            @apply my-8 pl-7 space-y-4 list-disc;
+        }
+
+        ul:not([class]) > li {
+            @apply pl-2 text-base leading-7;
+        }
+
+        ul:not([class]) > li > p:first-child {
+            @apply mt-0;
+        }
+
+        ul:not([class]) > li > *:last-child {
+            @apply mb-0;
+        }
+
+        ul:not([class]) ul:not([class]) {
+            @apply mt-3 pl-6 space-y-2 list-[circle];
+        }
+
+        ul:not([class]) ul:not([class]) ul:not([class]) {
+            @apply list-[square];
+        }
+
+        ul:not([class]) ol:not([class]) {
+            @apply mt-3 pl-6 list-[lower-alpha];
+        }
+
+        ol:not([class]) ul:not([class]) {
+            @apply mt-3 pl-6 list-[disc];
+        }
+
+        ol:not([class]) li p,
+        ol:not([class]) li,
+        ul:not([class]) li p,
+        ul:not([class]) li {
+            @apply mt-0 mb-0;
+        }
+
+        :not(pre) > code {
+            @apply bg-[#d2d7ed] border-1 border-[#c4c6cd] dark:bg-[#1e2339] dark:border-[#2e344f] text-gray-800 dark:text-gray-400 rounded-lg px-2 py-0.5 font-medium font-mono;
+        }
+
+        pre:has(code) {
+            @apply w-auto bg-[#1d2132] text-gray-200 py-5 rounded-xl px-5 py-5 mt-4 font-mono;
+        }
+
+        table:not([class]) {
+            @apply my-6 w-full border-separate border-spacing-0 rounded-lg overflow-hidden border border-gray-300 dark:border-gray-900 text-sm simple-block;
+        }
+
+        table:not([class]) th,
+        table:not([class]) td {
+            @apply border-r border-b border-[#d2d7ed] dark:border-[#1e2339];
+        }
+
+        table:not([class]) th:last-child,
+        table:not([class]) td:last-child {
+            @apply border-r-0;
+        }
+
+        table:not([class]) tbody tr:last-child td {
+            @apply border-b-0;
+        }
+
+        table:not([class]) th,
+        table:not([class]) th td,
+        table:not([class]) th p,
+        table:not([class]) th td p {
+            @apply bg-[#d2d7ed] dark:bg-[#1e2339] text-gray-800 dark:text-gray-200 font-bold;
+        }
+
+        table:not([class]) th p {
+            @apply px-2 py-2 m-0 my-1 text-sm;
+        }
+
+        table:not([class]) tbody tr td p {
+            @apply text-gray-700 dark:text-gray-300 px-2 py-1 m-0 my-1 text-sm;
+        }
+
+        table:not([class]) {
+            @apply rounded-lg overflow-hidden;
+        }
+
+        table:not([class]) th:first-child {
+            @apply rounded-tl-lg;
+        }
+
+        table:not([class]) th:last-child {
+            @apply rounded-tr-lg;
+        }
+
+        table:not([class]) tbody tr:last-child td:first-child {
+            @apply rounded-bl-lg;
+        }
+
+        table:not([class]) tbody tr:last-child td:last-child {
+            @apply rounded-br-lg;
+        }
+
+        blockquote:not([class]) {
+            @apply my-6 border-l-4 border-gray-500 bg-gray-300 py-2 pl-4 pr-3 italic text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300;
+        }
+
+        blockquote:not([class]) > :first-child {
+            @apply mt-0;
+        }
+
+        blockquote:not([class]) > :last-child {
+            @apply mb-0;
+        }
+
+        blockquote:not([class]) p {
+            @apply my-2;
+        }
+
+        blockquote:not([class]) cite {
+            @apply mt-3 block not-italic text-sm text-gray-500 dark:text-gray-400;
+        }
+
+        blockquote:not([class]) cite::before {
+            content: "— ";
+        }
+    }
+}

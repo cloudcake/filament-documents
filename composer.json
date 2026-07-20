@@ -1,0 +1,25 @@
+{
+  "name": "cloudcake/filament-documents",
+  "type": "library",
+  "license": "proprietary",
+  "description": "Filament documentation panels.",
+  "require": {
+    "php": "^8.2",
+    "cloudcake/filament-components": "dev-main",
+    "filament/filament": "^4.0|^5.0",
+    "phiki/phiki": "^2.2",
+    "symfony/yaml": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Cloudcake\\Documents\\": "src/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Cloudcake\\Documents\\ServiceProvider"
+      ]
+    }
+  }
+}
