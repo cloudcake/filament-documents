@@ -6,6 +6,13 @@ use Livewire\Livewire;
 
 class ServiceProvider extends \Illuminate\Support\ServiceProvider
 {
+    public function register(): void
+    {
+        // Required for livewire 4 since we do deep nesting things.
+        config([
+            'livewire.payload.max_nesting_depth' => 20,
+        ]);
+    }
 
     public function boot(): void
     {
