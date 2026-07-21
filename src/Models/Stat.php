@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 #[ScopedBy([CurrentPanel::class])]
 class Stat extends Model
@@ -43,10 +44,33 @@ class Stat extends Model
         return Document::getStatsTableName();
     }
 
+    public function recordable() : MorphTo
+    {
+        return $this->morphTo();
+    }
+
+    public static function hits(): Builder
+    {
+        return static::query()
+            ->where('key', StatKey::Visit);
+    }
+
+    public static function misses(): Builder
+    {
+        return static::query()
+            ->where('key', StatKey::Miss);
+    }
+
+    public static function forbidden(): Builder
+    {
+        return static::query()
+            ->where('key', StatKey::Forbidden);
+    }
+
     public static function searches(): Builder
     {
         return static::query()
-            ->orWhere('key', StatKey::SearchHit)
+            ->where('key', StatKey::SearchHit)
             ->orWhere('key', StatKey::SearchMiss);
     }
 

@@ -3,6 +3,8 @@
 namespace Cloudcake\Documents\Pages;
 
 use Cloudcake\Documents\Models\Document;
+use Cloudcake\Documents\Resources\Widgets\HitsChart;
+use Cloudcake\Documents\Resources\Widgets\HitStats;
 use Cloudcake\Documents\Resources\Widgets\TopSearchHits;
 use Cloudcake\Documents\Resources\Widgets\TopSearchMisses;
 use Cloudcake\Documents\Resources\Widgets\SearchStats;
@@ -41,6 +43,8 @@ class Documentation extends Page implements HasSchemas, HasActions
     protected function getHeaderWidgets(): array
     {
         return [
+            HitStats::make(),
+            HitsChart::make(),
             SearchStats::make(),
             TopSearchHits::make(),
             TopSearchMisses::make(),

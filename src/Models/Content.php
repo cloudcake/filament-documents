@@ -6,6 +6,7 @@ use Cloudcake\Documents\Document;
 use Cloudcake\Documents\Enums\DocumentAccessSetting;
 use Cloudcake\Documents\Enums\DocumentAuthorshipSetting;
 use Cloudcake\Documents\Enums\GateCheckType;
+use Cloudcake\Documents\Enums\StatKey;
 use Cloudcake\Documents\Models\Concerns\FillsCurrentPanelOwner;
 use Cloudcake\Documents\Models\Concerns\HasRevisions;
 use Cloudcake\Documents\Models\Scopes\CurrentPanel;
@@ -16,6 +17,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -103,6 +105,16 @@ class Content extends Model
     public function getTable(): string
     {
         return Document::getContentTableName();
+    }
+
+    public function stats(): MorphMany
+    {
+        return $this->morphMany(Stat::class, 'recordable');
+    }
+
+    public function hits()
+    {
+        return $this->stats()->where('key', StatKey::Visit);
     }
 
     public function ratings(): HasMany

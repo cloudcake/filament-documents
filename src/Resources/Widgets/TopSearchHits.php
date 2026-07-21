@@ -8,8 +8,6 @@ use Illuminate\Contracts\Support\Htmlable;
 
 class TopSearchHits extends ChartWidget
 {
-    protected ?string $heading = 'Coming Soon';
-
     private int $max = 10;
 
     /**
@@ -32,14 +30,19 @@ class TopSearchHits extends ChartWidget
             ->take($this->max)
             ->get();
 
+        $hasEnoughData = $data->count() == $this->max;
+
+        if (!$hasEnoughData)
+            return ['datasets' => null, 'labels' => ['Insufficient Data']];
+
         return [
             'datasets' => [
                 [
                     'label' => 'Hits',
                     'data' => $data->map(fn($item) => $item->count)->toArray(),
-                ],
+                ]
             ],
-            'labels' => $data->map(fn($item) => str($item->data)->limit(24))->toArray(),
+            'labels' => $data->map(fn($item) => str($item->data)->limit(24)->wrap('“', '”'))->toArray(),
         ];
     }
 

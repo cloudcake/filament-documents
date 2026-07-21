@@ -2,6 +2,7 @@
 
 namespace Cloudcake\Documents\Resources\Widgets;
 
+use Filament\Support\Enums\IconPosition;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Support\Number;
@@ -26,19 +27,19 @@ class SearchStats extends BaseWidget
         return [
             Stat::make('Searches', $searches)
                 ->description('Total Document Searches')
-                ->descriptionIcon('tabler-search')
+                ->descriptionIcon('tabler-search', IconPosition::Before)
                 ->color('primary')
                 ->icon('tabler-search'),
 
             Stat::make('Search Hits', $searchHits)
                 ->description('Number of searches rendering results.')
-                ->descriptionIcon('tabler-mood-search')
+                ->descriptionIcon('tabler-mood-search', IconPosition::Before)
                 ->color('primary')
                 ->icon('tabler-mood-search'),
 
             Stat::make('Search Misses', $searchMisses)
                 ->description('Number of searches missing results.')
-                ->descriptionIcon('tabler-search-off')
+                ->descriptionIcon('tabler-search-off', IconPosition::Before)
                 ->color('primary')
                 ->icon('tabler-search-off'),
         ];

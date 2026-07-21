@@ -106,10 +106,23 @@ return new class extends Migration {
             Schema::create(\Cloudcake\Documents\Document::getStatsTableName(), function (Blueprint $table) {
                 $table->uuid('id')->primary();
                 $table->string('panel_id')->index();
+                $table->uuid('record_id')->nullable()->index();
                 $table->string('key', 38)->index();
                 $table->text('data')->nullable();
                 $table->integer('count')->nullable();
                 $table->dateTimes();
+            });
+        }
+
+        if (!Schema::hasColumn(\Cloudcake\Documents\Document::getStatsTableName(), 'record_id')) {
+            Schema::table(\Cloudcake\Documents\Document::getStatsTableName(), function (Blueprint $table) {
+                $table->uuid('record_id')->nullable()->index()->after('panel_id');
+            });
+        }
+
+        if (!Schema::hasColumn(\Cloudcake\Documents\Document::getStatsTableName(), 'record_type')) {
+            Schema::table(\Cloudcake\Documents\Document::getStatsTableName(), function (Blueprint $table) {
+                $table->string('record_type')->nullable()->after('record_id');
             });
         }
     }

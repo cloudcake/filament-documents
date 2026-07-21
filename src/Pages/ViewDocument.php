@@ -7,8 +7,10 @@ use Cloudcake\Documents\Enums\DocumentAccessSetting;
 use Cloudcake\Documents\Enums\DocumentRatingSystemSetting;
 use Cloudcake\Documents\Enums\GateCheckType;
 use Cloudcake\Documents\Enums\RenderState;
+use Cloudcake\Documents\Enums\StatKey;
 use Cloudcake\Documents\Models\Content;
 use Cloudcake\Documents\Models\Document;
+use Cloudcake\Documents\Models\Stat;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Pages\Page;
@@ -37,12 +39,12 @@ class ViewDocument extends Page implements HasSchemas, HasActions
     public int $currentContentIndex = 0;
 
     public Content|null $previousPage = null;
-    public Content|null $nextPage = null;
+    public Content|null $nextPage     = null;
 
     public array|null $userRating = null;
 
     protected static bool $isGloballySearchable = true;
-    private RenderState $renderState = RenderState::OK;
+    private RenderState   $renderState          = RenderState::OK;
 
     public static function getSlug(?Panel $panel = null): string
     {
@@ -176,17 +178,34 @@ class ViewDocument extends Page implements HasSchemas, HasActions
 
             if (!$record) {
                 $this->renderState = RenderState::NotFound;
+                $this->incrementMisses();
                 return;
             }
 
             if (!\Cloudcake\Documents\Document::allow($record, GateCheckType::Access)) {
                 $this->renderState = RenderState::NotAllowed;
+                $this->incrementForbidden();
                 return;
             }
 
             $this->renderState = RenderState::OK;
             $this->record = Content::find($record->id);
+
+            $stat = Stat::firstOrCreate(['key' => StatKey::Visit, 'record_id' => $record->id], ['count' => 0]);
+            $stat->increment('count');
         }
+    }
+
+    private function incrementMisses(): void
+    {
+        $stat = Stat::firstOrCreate(['key' => StatKey::Miss], ['count' => 0]);
+        $stat->increment('count');
+    }
+
+    private function incrementForbidden(): void
+    {
+        $stat = Stat::firstOrCreate(['key' => StatKey::Forbidden], ['count' => 0]);
+        $stat->increment('count');
     }
 
     public function getSchemas(): array
