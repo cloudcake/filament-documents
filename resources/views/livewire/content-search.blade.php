@@ -5,7 +5,7 @@
 @endphp
 <div class="w-full ml-10 mx-auto" x-data="handleSearch">
     <button
-            class="w-full sm:w-[380px] text-[15px] bg-white text-slate-400 inline-flex items-center justify-between leading-5 pl-3 pr-2 py-[7px] rounded-sm border border-slate-200 hover:border-slate-300 shadow-xs whitespace-nowrap dark:text-slate-500 dark:bg-slate-950 dark:border-slate-900 dark:hover:border-slate-800 ring-0"
+            class="w-full sm:w-[380px] text-[15px] bg-white text-slate-400 dark:text-slate-500 dark:bg-slate-900/40 dark:border-slate-800 dark:hover:border-slate-700/50 inline-flex items-center justify-between leading-5 pl-3 pr-2 py-[7px] rounded-sm border border-slate-200 hover:border-slate-300 shadow-xs whitespace-nowrap ring-0"
             @click.prevent="openSearch"
             @keydown.f3.window.prevent="openSearch"
             aria-controls="search-modal"
@@ -16,10 +16,10 @@
                 <path
                         d="m14.707 13.293-1.414 1.414-2.4-2.4 1.414-1.414 2.4 2.4ZM6.8 12.6A5.8 5.8 0 1 1 6.8 1a5.8 5.8 0 0 1 0 11.6Zm0-2a3.8 3.8 0 1 0 0-7.6 3.8 3.8 0 0 0 0 7.6Z"/>
             </svg>
-            <span>Search<span class="hidden sm:inline"> documentation</span>…</span>
+            <span>{{ __('cloudcake-documents::documents.search.placeholder') }}</span>
         </div>
         <div
-                class="flex items-center justify-center h-5 w-auto px-2 font-medium text-slate-500 rounded-sm border border-slate-200 shadow-xs ml-3 dark:bg-slate-950 dark:text-slate-400 dark:border-slate-800">
+                class="flex items-center justify-center h-5 w-auto px-2 font-medium text-slate-500 rounded-sm border border-slate-200 shadow-xs ml-3 dark:bg-slate-950/5 dark:text-slate-400 dark:border-slate-800">
             F3
         </div>
     </button>
@@ -40,7 +40,7 @@
         <!-- Modal dialog -->
         <div
                 id="search-modal"
-                class="fixed inset-0 z-50 overflow-hidden flex items-start top-5 md:top-28 mb-4 justify-center px-4 sm:px-6"
+                class="fixed inset-0 z-50 overflow-hidden flex items-start top-5 md:top-28 justify-center px-4 sm:px-6"
                 role="dialog"
                 aria-modal="true"
                 x-show="searchOpen"
@@ -53,7 +53,7 @@
                 x-cloak
         >
             <div
-                    class="bg-white overflow-auto max-w-2xl w-full max-h-full rounded-sm shadow-lg dark:bg-slate-900"
+                    class="bg-white dark:bg-slate-900 border border-gray-300  p-3 dark:border-slate-800 overflow-auto max-w-2xl w-full max-h-full rounded-xl shadow-lg "
                     @click.outside="focusInput"
                     @keydown.escape.window="closeSearch"
             >
@@ -61,7 +61,7 @@
                 <form class="border-b border-slate-200 dark:border-slate-800">
                     <div class="flex items-center">
                         <label for="modal-search">
-                            <span class="sr-only">Search</span>
+                            <span class="sr-only">{{ __('cloudcake-documents::documents.search.label') }}</span>
                             <svg
                                     wire:loading.delay.remove
                                     class="w-4 h-4 fill-slate-500 shrink-0 ml-4 mr-2 dark:fill-slate-400"
@@ -78,7 +78,7 @@
                                 autocomplete="off"
                                 id="modal-search"
                                 class="text-sm w-full bg-white border-0 outline-none ring-0 focus:ring-transparent placeholder-slate-400 appearance-none py-3 pl-2 pr-4 dark:bg-slate-900 dark:placeholder:text-slate-500 rounded-xl"
-                                type="search" placeholder="Search documentation…"
+                                type="search" placeholder="{{ __('cloudcake-documents::documents.search.placeholder') }}"
                                 x-ref="searchInput"/>
                         <div
                                 @click="closeSearch"
@@ -178,7 +178,7 @@
                     @endif
                     <!-- Actions -->
                     <div>
-                        <div class="text-sm font-medium text-slate-500 px-2 mb-2">Actions
+                        <div class="text-sm font-medium text-slate-500 px-2 mb-2">{{ __('cloudcake-documents::documents.search.results.alternative') }}
                         </div>
                         <ul>
                             <li>

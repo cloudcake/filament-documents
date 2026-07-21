@@ -1,3 +1,11 @@
 <?php
 
-return [];
+return [
+    'search' => [
+        'label' => 'Find',
+        'placeholder' => 'Search documentation...',
+        'results' => [
+            'alternative' => 'Alternative'
+        ]
+    ]
+];

@@ -11,7 +11,6 @@ use Cloudcake\Documents\Models\Concerns\HasRevisions;
 use Cloudcake\Documents\Models\Scopes\CurrentPanel;
 use Closure;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
@@ -19,7 +18,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Collection as SupportCollection;
 
 /**
  * @property Collection $ratings
@@ -85,7 +83,7 @@ class Content extends Model
         'created_at',
     ];
 
-    protected static function boot()
+    protected static function boot(): void
     {
         parent::boot();
 
@@ -137,7 +135,7 @@ class Content extends Model
         return static::fullIndex(GateCheckType::Access)->first();
     }
 
-    public static function fullIndex(GateCheckType $checkType, bool $forceRefresh = false, int|bool $limit = false, Closure $whereSubQuery = null): Collection
+    public static function fullIndex(GateCheckType $checkType, bool $forceRefresh = false, int|bool $limit = false, Closure|null $whereSubQuery = null): Collection
     {
         if (!is_null(static::$cachedFullIndex) && !$forceRefresh)
             return static::$cachedFullIndex
@@ -162,10 +160,10 @@ class Content extends Model
             ->when($limit, fn($query) => $query->limit($limit))
             ->get();
 
-        return static::fullIndex($checkType, forceRefresh: false);
+        return static::fullIndex($checkType);
     }
 
-    public static function search(string $term, int $limit = 5)
+    public static function search(string $term, int $limit = 5): Collection
     {
         $split = collect(explode(' ', $term))->filter()->all();
 
@@ -201,6 +199,7 @@ class Content extends Model
         return $viewPanel->getUrl() . '/' . $this->slug;
     }
 
+    /** @noinspection PhpUnused This is used in blade views. */
     public function getCrumbsAttribute(): ?array
     {
         $appName = config('app.name');

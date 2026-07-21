@@ -314,7 +314,7 @@ class Document implements Plugin
 
     private static function safePath(Panel $panel, string $path): string
     {
-        return str($panel->getPath() . '/' . $path)->replace('//', '/')->toString();
+        return str($panel->getPath() . '/' . $path)->replace('//', '/')->start('/')->toString();
     }
 
     public static function setVar(string $key, mixed $value): void
