@@ -34,13 +34,6 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
     private function bootViews(): void
     {
         $this->loadViewsFrom(__DIR__ . '/../resources/views', 'cloudcake-documents');
-
-//        Livewire::addNamespace(
-//            namespace: 'cloudcake-documents',
-//            classNamespace: 'Cloudcake\\Documents\\Livewire\\',
-//            classPath: __DIR__ . '/Livewire',
-//            classViewPath: __DIR__ . '/../resources/views/livewire',
-//        );
     }
 
     private function bootMigrations(): void
