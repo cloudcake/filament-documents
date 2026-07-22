@@ -17,7 +17,7 @@ class HitsChart extends ChartWidget
      */
     public function getHeading(): ?string
     {
-        return "Hit Spectrum";
+        return "Hit Type Frequency";
     }
 
     public function getDescription(): string|Htmlable|null

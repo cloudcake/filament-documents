@@ -8,6 +8,7 @@ use Filament\Forms\Components\CodeEditor\Enums\Language;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\CodeEntry;
+use Filament\Schemas\Components\Flex;
 use Filament\Schemas\Schema;
 use Phiki\Grammar\Grammar;
 
@@ -37,12 +38,16 @@ class Code extends Component
     public static function editorSchema(array $data): array
     {
         return [
-            Select::make('lang')
-                ->label('Syntax Highlighting')
-                ->searchable()
-                ->live()
-                ->options(Grammar::class)
-                ->required(),
+            Flex::make([
+                Select::make('lang')
+                    ->label('Syntax Highlighting')
+                    ->inlineLabel()
+                    ->searchable()
+                    ->live()
+                    ->options(Grammar::class)
+                    ->grow(false)
+                    ->required(),
+            ]),
 
             CodeEditor::make('code')
                 ->language(fn($get) => $get('lang') ? Language::tryFrom($get('lang')->value) : null)

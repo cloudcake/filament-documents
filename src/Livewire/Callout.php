@@ -7,6 +7,7 @@ use Filament\Forms\Components\Builder\Block;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Flex;
 use Filament\Schemas\Schema;
 use Illuminate\Support\HtmlString;
 
@@ -36,23 +37,26 @@ class Callout extends Component
     public static function editorSchema(array $data): array
     {
         return [
-            IconPicker::make('icon'),
-            TextInput::make('heading')->required(),
-            RichEditor::make('description')->required(),
-            Select::make('colour')->required()->options([
-                'gray'    => 'Default',
-                'primary' => 'Primary',
-                'success' => 'Success',
-                'danger'  => 'Danger',
-                'warning' => 'Warning',
-                'info'    => 'Informative',
-            ]),
+            Flex::make([
+                IconPicker::make('icon')->grow(false),
+                TextInput::make('heading')->required(),
+                Select::make('colour')->required()->options([
+                    'gray'    => 'Default',
+                    'primary' => 'Primary',
+                    'success' => 'Success',
+                    'danger'  => 'Danger',
+                    'warning' => 'Warning',
+                    'info'    => 'Informative',
+                ])->grow(false),
+            ])->columns(3),
+            RichEditor::make('description')
+                ->toolbarButtons(['bold', 'italic', 'underline', 'strike', 'subscript', 'superscript', 'link'])
+                ->required(),
         ];
     }
 
     public static function renderSchema(array $data): array
     {
-
         return [
             \Filament\Schemas\Components\Callout::make()
                                                 ->heading($data['heading'])

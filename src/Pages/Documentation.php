@@ -44,7 +44,6 @@ class Documentation extends Page implements HasSchemas, HasActions
     {
         return [
             HitStats::make(),
-            HitsChart::make(),
             SearchStats::make(),
             TopSearchHits::make(),
             TopSearchMisses::make(),

@@ -31,6 +31,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Text;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\Alignment;
+use Filament\Support\Enums\Size;
 use Filament\Support\Enums\Width;
 use Illuminate\Validation\Rules\Unique;
 
@@ -140,6 +141,8 @@ class ContentForm
                                 ->components([
                                     Select::make('category_id')
                                         ->placeholder('None')
+                                        ->hintIcon('tabler-help')
+                                        ->hintIconTooltip("If no category is selected, the content will be prioritised in the navigation pane.")
                                         ->createOptionForm(fn(Schema $schema) => CategoryForm::configure($schema))
                                         ->createOptionAction(fn(Action $action) => $action->modalWidth(Width::Medium))
                                         ->label('Category')
@@ -170,12 +173,12 @@ class ContentForm
                                             Text::make("Private Category")
                                                 ->badge()
                                                 ->visible(fn($get) => $get('../categoryPrivateHint')),
-
-                                            Text::make("If no category is selected, the content will be prioritised in the navigation pane.")
                                         ])
                                         ->relationship('category', 'name'),
 
                                     Select::make('parent_id')
+                                        ->hintIcon('tabler-help')
+                                        ->hintIconTooltip("If a parent is selected, the category will be forced to none as the item will inherit the parent's category.")
                                         ->placeholder('None')
                                         ->label('Parent')
                                         ->live()
@@ -206,7 +209,7 @@ class ContentForm
                                                 ->badge()
                                                 ->visible(fn($get) => $get('../parentUnpublishedHint')),
 
-                                            Text::make("If a parent is selected, the category will be forced to none.")
+                                            Text::make("")
                                         ])
                                         ->relationship(
                                             name: 'parent',
@@ -222,7 +225,7 @@ class ContentForm
                                         ->default(10)
                                         ->label('Priority')
                                         ->hintIcon('tabler-help')
-                                        ->hintIconTooltip("Higher priority moves the content closer to the top of the navigation pane. This value is relative to the category (if any) the content belongs to.")
+                                        ->hintIconTooltip("Lower priority positions move the content closer to the top of the navigation pane. This value is relative to the category (if any) the content belongs to.")
                                         ->inlineLabel()
                                         ->numeric(),
 
@@ -235,6 +238,11 @@ class ContentForm
 
                                     TagsInput::make('tags')
                                         ->inlineLabel()
+                                        ->hintIcon('tabler-help')
+                                        ->hintIconTooltip('Tags assist search functions to find relevant content. Combining this information with your highest search miss terms you can help you better search filtering.')
+                                        ->belowContent([
+                                            Text::make('Assists search to find relevant content.')->size(Size::ExtraSmall)
+                                        ])
                                         ->color('primary')
                                         ->reorderable()
                                         ->nestedRecursiveRules([

@@ -28,21 +28,21 @@ class HitStats extends BaseWidget
             Stat::make('Hits', $hits)
                 ->description('Total Document Hits')
                 ->descriptionColor('gray')
-                ->descriptionIcon('tabler-numbers', IconPosition::Before)
+                ->descriptionIcon('tabler-circle-check', IconPosition::Before)
                 ->color('primary')
                 ->icon('tabler-circle-check'),
 
             Stat::make('Misses', $misses)
                 ->description('Number of non-existent slug hits.')
                 ->descriptionColor('gray')
-                ->descriptionIcon('tabler-numbers', IconPosition::Before)
+                ->descriptionIcon('tabler-error-404', IconPosition::Before)
                 ->color('primary')
                 ->icon('tabler-error-404'),
 
             Stat::make('Forbidden', $forbidden)
                 ->description('Number of prohibited page hits.')
                 ->descriptionColor('gray')
-                ->descriptionIcon('tabler-numbers', IconPosition::Before)
+                ->descriptionIcon('tabler-shield-x', IconPosition::Before)
                 ->color('primary')
                 ->icon('tabler-shield-x'),
         ];

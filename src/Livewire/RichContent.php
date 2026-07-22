@@ -16,16 +16,16 @@ class RichContent extends Component
     public static function block(): Block
     {
         return Block::make(static::class)
-                    ->label(function($state) {
+            ->label(function ($state) {
 
-                        if ($state['raw'] ?? false) {
-                            return str(RichContentRenderer::make($state['raw'])->toText())->before(PHP_EOL)->limit(32, preserveWords: true);
-                        }
+                if ($state['raw'] ?? false) {
+                    return str(RichContentRenderer::make($state['raw'])->toText())->before(PHP_EOL)->limit(32, preserveWords: true);
+                }
 
-                        return 'Rich Content';
-                    })
-                    ->icon('tabler-html')
-                    ->components(fn($state) => static::editorSchema($state));
+                return 'Rich Content';
+            })
+            ->icon('tabler-html')
+            ->components(fn($state) => static::editorSchema($state));
     }
 
     public function schema(Schema $schema): Schema
@@ -39,7 +39,15 @@ class RichContent extends Component
     public static function editorSchema(array $data): array
     {
         return [
-            RichEditor::make('raw')->hiddenLabel()
+            RichEditor::make('raw')
+                ->toolbarButtons([
+                    ['bold', 'italic', 'underline', 'strike', 'link'],
+                    ['h1', 'h2', 'h3', 'h4'],
+                    ['blockquote', 'codeBlock', 'bulletList', 'orderedList'],
+                    ['table'],
+                    ['undo', 'redo']
+                ])
+                ->hiddenLabel()
         ];
     }
 

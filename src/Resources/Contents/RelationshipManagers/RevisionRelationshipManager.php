@@ -33,13 +33,14 @@ class RevisionRelationshipManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(fn($query) => $query->with(['author']))
+            ->modifyQueryUsing(fn($query) => $query->with(['author', 'content']))
             ->columns([
                 TextColumn::make('editor')
                     ->getStateUsing(fn($record) => $record->author_name),
 
                 TextColumn::make('diff_size')
                     ->label('Diff Size')
+                    ->alignCenter()
                     ->getStateUsing(function ($record) {
                         $jsonString = json_encode($record->diff);
                         $bytes = mb_strlen($jsonString, '8bit');
@@ -53,7 +54,7 @@ class RevisionRelationshipManager extends RelationManager
             ])
             ->recordActions([
                 Action::make('view_diff')
-                    ->label('View Diff')
+                    ->label('Diff')
                     ->icon('tabler-git-cherry-pick')
                     ->modal()
                     ->modalWidth(Width::SevenExtraLarge)
@@ -73,17 +74,17 @@ class RevisionRelationshipManager extends RelationManager
                         ])
                     ]),
 
-                Action::make('view_past_state')
-                    ->label('View Past State')
-                    ->disabled()
-                    ->tooltip("Feature coming soon")
-                    ->url(fn($record) => $record->content->url . '?revision=' . $record->id),
-
-                Action::make('restore_state')
-                    ->label('Restore State')
-                    ->disabled()
-                    ->tooltip("Feature coming soon")
-                    ->url(fn($record) => $record->content->url . '?revision=' . $record->id)
+//                Action::make('view_past_state')
+//                    ->label('View Past State')
+//                    ->disabled()
+//                    ->tooltip("Feature coming soon")
+//                    ->url(fn($record) => $record->content->url . '?revision=' . $record->id),
+//
+//                Action::make('restore_state')
+//                    ->label('Restore State')
+//                    ->disabled()
+//                    ->tooltip("Feature coming soon")
+//                    ->url(fn($record) => $record->content->url . '?revision=' . $record->id)
             ]);
     }
 }

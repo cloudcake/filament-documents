@@ -23,7 +23,7 @@ class ContentSearch extends Component
         $this->results = [];
 
         if (!empty($this->term)) {
-            $term = strtolower($this->term);
+            $term = trim(strtolower($this->term));
 
             $this->results = Content::search($term)->all();
 
