@@ -342,5 +342,9 @@
         blockquote:not([class]) cite::before {
             content: "— ";
         }
+
+        hr {
+            @apply my-12 mx-2 border-gray-200 dark:border-gray-400/4;
+        }
     }
 }
