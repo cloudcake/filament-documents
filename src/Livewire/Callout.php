@@ -2,7 +2,7 @@
 
 namespace Cloudcake\Documents\Livewire;
 
-use Cloudcake\Components\IconPicker\Forms\Components\IconPicker;
+use Cloudcake\Components\Forms\Components\IconPicker;
 use Filament\Forms\Components\Builder\Block;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;

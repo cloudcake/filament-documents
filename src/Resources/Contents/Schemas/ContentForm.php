@@ -2,7 +2,7 @@
 
 namespace Cloudcake\Documents\Resources\Contents\Schemas;
 
-use Cloudcake\Components\IconPicker\Forms\Components\IconPicker;
+use Cloudcake\Components\Forms\Components\IconPicker;
 use Cloudcake\Documents\Document;
 use Cloudcake\Documents\Enums\GateFilter;
 use Cloudcake\Documents\Enums\GateRequirement;

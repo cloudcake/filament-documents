@@ -2,7 +2,7 @@
 
 namespace Cloudcake\Documents\Pages;
 
-use Cloudcake\Components\IconPicker\Forms\Components\IconPicker;
+use Cloudcake\Components\Forms\Components\IconPicker;
 use Cloudcake\Documents\Enums\DocumentAccessAuthRequirementSetting;
 use Cloudcake\Documents\Enums\DocumentAccessSetting;
 use Cloudcake\Documents\Enums\DocumentAuthorshipSetting;
