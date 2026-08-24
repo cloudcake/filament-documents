@@ -18,15 +18,7 @@ class ListComponents extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Action::make('view_document')
-                  ->label('View Document')
-                  ->color('gray')
-                  ->url(fn() => Document::viewPanel()->getUrl(), shouldOpenInNewTab: true),
 
-            Action::make('edit_document')
-                  ->label('Edit Settings')
-                  ->color('gray')
-                  ->url(fn() => Settings::getNavigationUrl(), shouldOpenInNewTab: false),
         ];
     }
 }

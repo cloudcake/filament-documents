@@ -2,14 +2,16 @@
 
 namespace Cloudcake\Documents\Resources\Contents\RelationshipManagers;
 
+use Cloudcake\Documents\Resources\Contents\ContentResource;
 use Cloudcake\Documents\Resources\Contents\Schemas\ContentForm;
 use Cloudcake\Documents\Resources\Contents\Tables\ContentsTable;
 use BackedEnum;
-use Filament\Actions\CreateAction;
+use Filament\Actions\Action;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 class ContentRelationshipManager extends RelationManager
 {
@@ -19,10 +21,15 @@ class ContentRelationshipManager extends RelationManager
 
     protected static string|BackedEnum|null $icon = 'tabler-sitemap';
 
+
     protected function getTableHeaderActions(): array
     {
         return [
-            CreateAction::make()->label("Create Sub-Content")
+            Action::make('create')
+                ->label('Create Sub-Content')
+                ->url(fn (): string => ContentResource::getUrl('create-sub-content', [
+                    'parent' => $this->getOwnerRecord()->getKey(),
+                ])),
         ];
     }
 
@@ -38,5 +45,10 @@ class ContentRelationshipManager extends RelationManager
                 ->whereNotNull('parent_id')
                 ->orderBy("sort", 'asc')
             );
+    }
+
+    public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
+    {
+        return !$ownerRecord->parent_id;
     }
 }

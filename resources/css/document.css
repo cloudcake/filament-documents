@@ -1,6 +1,5 @@
 @import '../../vendor/filament/filament/resources/css/theme.css';
-@source '../../src/**/*';
-@source '../**/*';
+@source '../../**/*';
 
 @theme {
     --animate-background: background-move ease infinite;
@@ -104,13 +103,65 @@
     @apply animate-gradient bg-[length:200%_100%] bg-linear-to-r from-indigo-500 via-indigo-950 to-indigo-500 dark:from-gray-950 dark:via-gray-500 dark:to-gray-950 bg-clip-text text-transparent;
 }
 
+.topbar-search-input {
+    @apply w-full sm:w-[380px] text-slate-400 bg-slate-100/10 dark:bg-slate-800/10 border border-slate-800/10 hover:border-slate-700/20 inline-flex items-center justify-between leading-5 pl-3 pr-2 py-[7px] shadow-xs whitespace-nowrap ring-0 rounded-4xl font-normal text-sm;
+}
+
+.modal-search {
+    @apply backdrop-blur-sm border border-gray-300 p-3 border-slate-800/20 overflow-auto max-w-2xl w-full max-h-full rounded-xl shadow-lg bg-slate-50/70 dark:bg-slate-800/70;
+}
+
+.modal-search-input {
+    @apply text-sm w-full border-0 outline-none ring-0 focus:ring-transparent appearance-none py-3 pl-2 pr-4 bg-slate-900/2 placeholder:text-slate-800 dark:placeholder:text-slate-300 rounded-xl;
+}
+
+.modal-search-key-bind {
+    @apply cursor-pointer flex items-center justify-center h-5 w-5 font-medium text-sm text-slate-800 rounded-sm border shadow-xs px-5 mx-3 border-slate-800/10 dark:border-slate-700 dark:text-slate-500;
+}
+
+.modal-search-result-heading {
+    @apply text-slate-950 dark:text-slate-50 font-bold;
+}
+
+.modal-search-result-crumb {
+    @apply text-slate-500 dark:text-slate-300;
+}
+
+.modal-search-result-crumb-separator {
+    @apply text-slate-700 dark:text-slate-500;
+}
+
+.modal-search-result-empty-heading {
+    @apply text-sm text-slate-500 dark:text-slate-300;
+}
+
+.modal-search-result-empty-subheading {
+    @apply text-xs text-slate-500 dark:text-slate-400;
+}
+
+.modal-search-icon {
+    @apply w-4 h-4 fill-slate-800 dark:fill-slate-50 shrink-0 ml-4 mr-2;
+}
+
 .document-page {
+    .pagination-button {
+        @apply simple-block flex max-w-md w-full items-center gap-5 rounded-2xl border border-gray-300 dark:border-gray-800 p-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg;
+    }
+
     .pagination-previous-button {
-        @apply simple-block;
+        @apply mr-auto text-left;
     }
 
     .pagination-next-button {
-        @apply simple-block;
+        @apply ml-auto items-center justify-end text-right;
+    }
+
+    .pagination-category {
+        @apply text-xs font-medium uppercase tracking-[0.15em] text-primary-500;
+    }
+
+    .pagination-title {
+        @apply mt-0 text-sm font-medium;
     }
 
     .fi-section-header-heading {
@@ -272,7 +323,7 @@
 
         table:not([class]) th,
         table:not([class]) td {
-            @apply border-r border-b border-[#d2d7ed] dark:border-[#1e2339];
+            @apply border-r border-b border-primary-400/5 dark:border-primary-600/5;
         }
 
         table:not([class]) th:last-child,
@@ -288,7 +339,7 @@
         table:not([class]) th td,
         table:not([class]) th p,
         table:not([class]) th td p {
-            @apply bg-[#d2d7ed] dark:bg-[#1e2339] text-gray-800 dark:text-gray-200 font-bold;
+            @apply bg-primary-600 text-gray-200 font-bold;
         }
 
         table:not([class]) th p {

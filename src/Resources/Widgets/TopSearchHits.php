@@ -30,11 +30,6 @@ class TopSearchHits extends ChartWidget
             ->take($this->max)
             ->get();
 
-        $hasEnoughData = $data->count() == $this->max;
-
-        if (!$hasEnoughData)
-            return ['datasets' => null, 'labels' => ['Insufficient Data']];
-
         return [
             'datasets' => [
                 [

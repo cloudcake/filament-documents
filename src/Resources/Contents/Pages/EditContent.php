@@ -2,9 +2,10 @@
 
 namespace Cloudcake\Documents\Resources\Contents\Pages;
 
+use BackedEnum;
 use Cloudcake\Documents\Resources\Contents\ContentResource;
 use Filament\Resources\Pages\EditRecord;
-use Filament\Schemas\Components\Tabs\Tab;
+use Illuminate\Contracts\Support\Htmlable;
 
 class EditContent extends EditRecord
 {
@@ -13,5 +14,10 @@ class EditContent extends EditRecord
     public function hasCombinedRelationManagerTabsWithContent(): bool
     {
         return true;
+    }
+
+    public function getContentTabIcon(): string|BackedEnum|Htmlable|null
+    {
+        return 'tabler-pencil';
     }
 }

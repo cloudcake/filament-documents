@@ -289,9 +289,9 @@ class HttpRequest extends Component
                 ->description($baseUrl)
                 ->collapsible()
                 ->collapsed()
-                ->afterHeader([
-                    Text::make('Try it')->badge()->color('primary')->icon('tabler-player-play')->extraAttributes(['class' => 'cursor-pointer'])
-                ])
+//                ->afterHeader([
+//                    Text::make('Try it')->badge()->color('primary')->icon('tabler-player-play')->extraAttributes(['class' => 'cursor-pointer'])
+//                ])
                 ->components([
                     KeyValue::make('route_parameters')
                         ->hiddenLabel()

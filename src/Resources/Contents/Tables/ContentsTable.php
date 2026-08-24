@@ -5,6 +5,7 @@ namespace Cloudcake\Documents\Resources\Contents\Tables;
 use Cloudcake\Documents\Enums\DocumentRatingSystemSetting;
 use Cloudcake\Documents\Models\Content;
 use Cloudcake\Documents\Models\Document;
+use Cloudcake\Documents\Resources\Contents\ContentResource;
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
@@ -61,11 +62,11 @@ class ContentsTable
 
                 IconColumn::make('private')
                     ->alignCenter()
-                    ->trueColor('black')
-                    ->trueIcon('tabler-eye-off')
-                    ->falseColor('success')
-                    ->falseIcon('tabler-cube')
-                    ->tooltip(fn($state) => $state ? 'Private' : 'Not Private')
+                    ->trueColor('primary')
+                    ->trueIcon('tabler-world-off')
+                    ->falseColor('primary')
+                    ->falseIcon('tabler-world')
+                    ->tooltip(fn($state) => $state ? 'Private' : 'Public')
                     ->label('Access'),
 
                 TextColumn::make('writer')
@@ -116,12 +117,16 @@ class ContentsTable
                     })->toggleable(),
             ])
             ->recordActions([
-                EditAction::make()->slideOver()->modalWidth(Width::SevenExtraLarge),
+                EditAction::make()->url(fn($record) => ContentResource::getUrl('edit', [
+                    'record' => $record->getKey()
+                ])),
+
                 ReplicateAction::make()->label('Copy')->mutateRecordDataUsing(function (array $data): array {
                     $data['title'] = $data['title'] . ' (copy)';
 
                     return $data;
                 })->requiresConfirmation(),
+
                 DeleteAction::make(),
             ]);
     }

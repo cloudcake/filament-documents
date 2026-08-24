@@ -136,7 +136,7 @@
 
                         @if ($this->previousPage)
                             <a href="{{ $this->previousPage->url }}" wire:navigate
-                               class="group flex mr-auto w-full max-w-md items-center gap-5 rounded-2xl border border-gray-300 dark:border-gray-800 p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg pagination-previous-button">
+                               class="group pagination-button pagination-previous-button">
 
                                 <x-filament::icon-button
                                         color="primary"
@@ -149,13 +149,15 @@
                                     $hasPreviousCategory = !blank($previousCategory);
                                 @endphp
                                 <div>
-                                    <p class="text-xs font-medium uppercase tracking-[0.15em] text-primary">
-                                        Previous @if($hasPreviousCategory)
-                                            · {{ $previousCategory }}
+                                    <p class="pagination-category">
+                                        @if($hasPreviousCategory)
+                                           {{ $previousCategory }}
+                                        @else
+                                            Previous
                                         @endif
                                     </p>
 
-                                    <h3 class="mt-2 text-lg font-semibold group-hover:text-primary">
+                                    <h3 class="pagination-title">
                                         {{ $this->previousPage->title }}
                                     </h3>
                                 </div>
@@ -163,20 +165,22 @@
                         @endif
                         @if ($this->nextPage)
                             <a href="{{ $this->nextPage->url }}" wire:navigate
-                               class="group flex ml-auto max-w-md w-full max-w-md items-center justify-end gap-5 rounded-2xl border border-gray-300 dark:border-gray-800 p-6 text-right transition-all duration-300 hover:-translate-y-1 hover:shadow-lg pagination-next-button">
+                               class="group pagination-button pagination-next-button">
 
                                 @php
                                     $nextCategory = $this->nextPage->relationLoaded('category') && $this->nextPage->category ? $this->nextPage->category->name : ($this->nextPage->relationLoaded('parent') && $this->nextPage->parent ? $this->nextPage->parent->title : null);
                                     $hasNextCategory = !blank($nextCategory);
                                 @endphp
                                 <div>
-                                    <p class="text-xs font-medium uppercase tracking-[0.15em] text-primary">
-                                        Next @if($hasNextCategory)
-                                            · {{ $nextCategory }}
+                                    <p class="pagination-category">
+                                        @if($hasNextCategory)
+                                            {{ $nextCategory }}
+                                        @else
+                                            Next
                                         @endif
                                     </p>
 
-                                    <h3 class="mt-2 text-lg font-semibold group-hover:text-primary">
+                                    <h3 class="pagination-title">
                                         {{ $this->nextPage->title }}
                                     </h3>
                                 </div>

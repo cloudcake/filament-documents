@@ -175,13 +175,15 @@ class Content extends Model
         return static::fullIndex($checkType);
     }
 
-    public static function search(string $term, int $limit = 5): Collection
+    public static function search(string $term, int $limit = 10): Collection
     {
         $split = collect(explode(' ', $term))->filter()->all();
 
         return static::fullIndex(checkType: GateCheckType::Access, forceRefresh: true, limit: $limit, whereSubQuery: function ($query) use ($term, $split) {
 
-            $query->where('title', 'like', "%$term%");
+            $query
+                ->where('title', 'like', "%$term%")
+                ->orWhere('schema', 'like', "%$term%");
 
             foreach ($split as $part) {
                 $query

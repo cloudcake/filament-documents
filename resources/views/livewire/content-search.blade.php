@@ -5,7 +5,7 @@
 @endphp
 <div class="w-full ml-10 mx-auto" x-data="handleSearch">
     <button
-            class="w-full sm:w-[380px] text-[15px] bg-white text-slate-400 dark:text-slate-500 dark:bg-slate-900/40 dark:border-slate-800 dark:hover:border-slate-700/50 inline-flex items-center justify-between leading-5 pl-3 pr-2 py-[7px] border border-slate-200 hover:border-slate-300 shadow-xs whitespace-nowrap ring-0 rounded-4xl"
+            class="topbar-search-input"
             @click.prevent="openSearch"
             @keydown.f3.window.prevent="openSearch"
             aria-controls="search-modal"
@@ -13,20 +13,19 @@
         <div class="flex items-center justify-center">
             <svg class="w-4 h-4 fill-slate-500 mr-3 shrink-0 dark:fill-slate-400" width="16"
                  height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-                <path
-                        d="m14.707 13.293-1.414 1.414-2.4-2.4 1.414-1.414 2.4 2.4ZM6.8 12.6A5.8 5.8 0 1 1 6.8 1a5.8 5.8 0 0 1 0 11.6Zm0-2a3.8 3.8 0 1 0 0-7.6 3.8 3.8 0 0 0 0 7.6Z"/>
+                <path d="m14.707 13.293-1.414 1.414-2.4-2.4 1.414-1.414 2.4 2.4ZM6.8 12.6A5.8 5.8 0 1 1 6.8 1a5.8 5.8 0 0 1 0 11.6Zm0-2a3.8 3.8 0 1 0 0-7.6 3.8 3.8 0 0 0 0 7.6Z"/>
             </svg>
             <span>{{ __('cloudcake-documents::documents.search.placeholder') }}</span>
         </div>
         <div
-                class="flex items-center justify-center h-5 w-auto px-2 font-medium text-slate-500 rounded-sm border border-slate-200 shadow-xs ml-3 dark:bg-slate-950/5 dark:text-slate-400 dark:border-slate-800">
+                class="modal-search-key-bind">
             F3
         </div>
     </button>
     <div>
         <!-- Modal backdrop -->
         <div
-                class="fixed inset-0 bg-slate-950/30 z-50 transition-opacity"
+                class="fixed inset-0 bg-slate-950/10 z-50 transition-all"
                 x-show="searchOpen"
                 x-transition:enter="transition ease-out duration-200"
                 x-transition:enter-start="opacity-0"
@@ -53,8 +52,8 @@
                 x-cloak
         >
             <div
-                    class="bg-white dark:bg-slate-900 border border-gray-300 p-3 dark:border-slate-800 overflow-auto max-w-2xl w-full max-h-full rounded-xl shadow-lg "
-                    @click.outside="focusInput"
+                    class="modal-search"
+                    @click.outside="closeSearch"
                     @keydown.escape.window="closeSearch"
             >
                 <!-- Search form -->
@@ -64,11 +63,10 @@
                             <span class="sr-only">{{ __('cloudcake-documents::documents.search.label') }}</span>
                             <svg
                                     wire:loading.delay.remove
-                                    class="w-4 h-4 fill-slate-500 shrink-0 ml-4 mr-2 dark:fill-slate-400"
+                                    class="modal-search-icon"
                                     width="16" height="16" viewBox="0 0 16 16"
                                     xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                        d="m14.707 13.293-1.414 1.414-2.4-2.4 1.414-1.414 2.4 2.4ZM6.8 12.6A5.8 5.8 0 1 1 6.8 1a5.8 5.8 0 0 1 0 11.6Zm0-2a3.8 3.8 0 1 0 0-7.6 3.8 3.8 0 0 0 0 7.6Z"/>
+                                <path d="m14.707 13.293-1.414 1.414-2.4-2.4 1.414-1.414 2.4 2.4ZM6.8 12.6A5.8 5.8 0 1 1 6.8 1a5.8 5.8 0 0 1 0 11.6Zm0-2a3.8 3.8 0 1 0 0-7.6 3.8 3.8 0 0 0 0 7.6Z"/>
                             </svg>
                             <x-filament::loading-indicator wire:loading.delay class="ml-4 mr-2 h-4 w-4"/>
                         </label>
@@ -77,12 +75,12 @@
                                 wire:keyup.debounce.1000="search"
                                 autocomplete="off"
                                 id="modal-search"
-                                class="text-sm w-full bg-white border-0 outline-none ring-0 focus:ring-transparent placeholder-slate-400 appearance-none py-3 pl-2 pr-4 dark:bg-slate-900 dark:placeholder:text-slate-500 rounded-xl"
+                                class="modal-search-input"
                                 type="search" placeholder="{{ __('cloudcake-documents::documents.search.placeholder') }}"
                                 x-ref="searchInput"/>
                         <div
                                 @click="closeSearch"
-                                class="cursor-pointer flex items-center justify-center h-5 w-5 font-medium text-sm text-slate-500 rounded-sm border border-slate-200 shadow-xs px-5 mx-3 dark:bg-slate-900 dark:text-slate-400 dark:border-slate-800">
+                                class="modal-search-key-bind">
                             ESC
                         </div>
                     </div>
@@ -111,7 +109,7 @@
                 </script>
                 <div class="px-2">
                     @if($searchIsNotEmpty)
-                        <div class="py-4 space-y-4 border-t border-slate-200 dark:border-slate-800">
+                        <div class="py-4 space-y-4 border-t border-slate-200/5">
                             @if (!$resultsAreEmpty)
                                 <ul>
                                     @foreach($results as $result)
@@ -120,22 +118,22 @@
                                                href="{{ $result->url }}"
                                                wire:navigate
                                             >
-                                                <div class="px-2 py-1 leading-6 text-sm text-slate-800 hover:bg-slate-100 rounded-sm dark:text-slate-200 dark:hover:bg-slate-700 focus-within:bg-slate-100 dark:focus-within:bg-slate-700">
-                                                    <div class="flex items-center">
+                                                <div class="px-3 py-2 leading-6 text-sm hover:bg-slate-900/5 rounded-xl focus-within:bg-slate-100">
+                                                    <div class="flex items-center modal-search-result-heading">
                                                         <x-filament::icon
-                                                                class="p-0 m-0 text-slate-600 hover:text-purple-500"
+                                                                class="p-0 m-0"
                                                                 icon="{{ $result->icon ?? 'tabler-book' }}"
                                                                 style="margin-inline-end: 12px;"/>
                                                         <span>{{ $result->title }}</span>
                                                     </div>
                                                     <span class="text-xs ml-8" style="margin-inline-end: 12px;">
-                                    @foreach($result->crumbs as $index => $crumb)
-                                                            <span class="text-slate-500">{{ $crumb }}</span>
+                                                        @foreach($result->crumbs as $index => $crumb)
+                                                            <span class="modal-search-result-crumb @if($index == count($result->crumbs)-1) font-bold @endif">{{ $crumb }}</span>
                                                             @if ($index < count($result->crumbs)-1)
-                                                                <span class="text-slate-700"> / </span>
+                                                                <span class="modal-search-result-crumb-separator"> / </span>
                                                             @endif
                                                         @endforeach
-                                </span>
+                                                    </span>
                                                 </div>
                                             </a>
                                         </li>
@@ -143,9 +141,9 @@
                                 </ul>
                             @else
                                 <div class="px-2">
-                                    <span class="text-sm">No results found. Try alternative keywords.</span>
+                                    <span class="modal-search-result-empty-heading">No results found. Try alternative keywords.</span>
                                     <div>
-                                        <span class="text-xs text-slate-500">Searching includes page title and content.</span>
+                                        <span class="modal-search-result-empty-subheading">Searching includes page title and content.</span>
                                     </div>
                                 </div>
                             @endif

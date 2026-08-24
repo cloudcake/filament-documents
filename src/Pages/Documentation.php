@@ -9,6 +9,7 @@ use Cloudcake\Documents\Resources\Widgets\TopSearchHits;
 use Cloudcake\Documents\Resources\Widgets\TopSearchMisses;
 use Cloudcake\Documents\Resources\Widgets\SearchStats;
 use BackedEnum;
+use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Notifications\Notification;
@@ -39,6 +40,15 @@ class Documentation extends Page implements HasSchemas, HasActions
 
     public array $data = [];
 
+    protected function getHeaderActions(): array
+    {
+        return [
+            Action::make('view_document')
+                ->label('View Document')
+                ->color('gray')
+                ->url(fn() => url()->to(filament()->getCurrentPanel()->getPlugin(\Cloudcake\Documents\Document::$id)->getAdminFor()), shouldOpenInNewTab: true),
+        ];
+    }
 
     protected function getHeaderWidgets(): array
     {
