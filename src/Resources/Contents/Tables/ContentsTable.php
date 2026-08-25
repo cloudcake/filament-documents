@@ -121,7 +121,10 @@ class ContentsTable
                     'record' => $record->getKey()
                 ])),
 
-                ReplicateAction::make()->label('Copy')->mutateRecordDataUsing(function (array $data): array {
+                ReplicateAction::make()->label('Copy')
+                    ->excludeAttributes(['id', 'children_count', 'category_sort'])
+                    ->mutateRecordDataUsing(function (array $data): array {
+
                     $data['title'] = $data['title'] . ' (copy)';
 
                     return $data;

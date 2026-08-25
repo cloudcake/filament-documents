@@ -22,6 +22,7 @@ use Filament\Schemas\Components\Flex;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Text;
 use Filament\Schemas\Schema;
+use Filament\Support\Enums\FontWeight;
 use GuzzleHttp\Exception\ConnectException;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Http;
@@ -52,7 +53,7 @@ class HttpRequest extends Component
             ->components(fn($state) => static::renderSchema($this->data));
     }
 
-    private static function findVariablePlaceholders(mixed $data): array
+    private static function findVariablePlaceholders(mixed $data, bool $keepVariableWrapper = false): array
     {
         if (blank($data)) {
             return [];
@@ -63,7 +64,14 @@ class HttpRequest extends Component
 
         preg_match_all('/\{\{([^}]+)}}/', $data, $matches);
 
-        return collect($matches)->flatten()->values()->unique()->filter(fn($match) => !str($match)->contains('{{'))->toArray();
+        return collect($matches)
+            ->flatten()
+            ->values()
+            ->unique()
+            ->filter(fn($match) => !str($match)->contains('{{'))
+            ->when($keepVariableWrapper)
+            ->map(fn($match) => str($match)->wrap('{{', '}}'))
+            ->toArray();
     }
 
     private static function findPlaceholdersInEndpoint(?string $endpoint = ''): array
@@ -136,7 +144,7 @@ class HttpRequest extends Component
         }
 
         $string = $string
-            ->prepend('<span class="text-gray-600 dark:text-gray-200">')
+            ->prepend('<span class="text-default">')
             ->append('</span>');
 
         return $string->toHtmlString();
@@ -283,9 +291,9 @@ class HttpRequest extends Component
         $baseUrl = $data['base_url'] ?? url()->to($data['endpoint'] ?? '');
 
         return [
-            Section::make($endpoint)
-                ->icon($method->getIcon())
+            Section::make(str("HTTP <span class='font-semibold'>{$method->getLabel()}</span> $endpoint")->toHtmlString())
                 ->compact()
+                ->contained(false)
                 ->description($baseUrl)
                 ->collapsible()
                 ->collapsed()
@@ -347,7 +355,26 @@ class HttpRequest extends Component
                         ->visible(fn($get) => $get('request_body'))
                         ->hiddenLabel()
                         ->disabled(fn($get) => !$get('allow_request_body_edits'))
-                        ->language(CodeEditor\Enums\Language::Json),
+                        ->language(CodeEditor\Enums\Language::Json)
+                        ->belowContent(function ($get) {
+                            $components = [];
+
+                            $variables = static::findVariablePlaceholders($get('request_body'));
+
+                            foreach ($variables as $variable) {
+                                $value = str(Document::getVar($variable))->limit(32);
+
+                                $components[] = Text::make("$variable")
+                                    ->badge()
+                                    ->inlineLabel()
+                                    ->icon('tabler-variable')
+                                    ->color('primary')
+                                    ->extraAttributes(['class' => 'cursor-pointer'])
+                                    ->tooltip(!blank($value) ? "$variable: $value" : "$variable has not been set.");
+                            }
+
+                            return $components;
+                        }),
 
                     Hidden::make('response_ready'),
                     Hidden::make('response_code'),
@@ -363,10 +390,21 @@ class HttpRequest extends Component
                             Flex::make([
                                 Text::make(fn($get) => 'HTTP ' . $get('response_code'))
                                     ->grow(false)
-                                    ->extraAttributes(['class' => 'ping'])
+                                    ->weight(FontWeight::ExtraBold)
+                                    ->extraAttributes(['class' => 'pulse'])
                                     ->visible(fn($get) => $get('response_valid'))
                                     ->badge()
-                                    ->icon('tabler-circle-filled')
+                                    ->icon(function ($get) {
+                                        $responseCode = $get('response_code');
+
+                                        $firstCharacter = substr($responseCode, 0, 1);
+
+                                        return match ($firstCharacter) {
+                                            '2' => 'tabler-check',
+                                            '4', '5' => 'tabler-x',
+                                            default => 'tabler-circle-filled',
+                                        };
+                                    })
                                     ->color(function ($get) {
                                         $responseCode = $get('response_code');
 
@@ -383,7 +421,7 @@ class HttpRequest extends Component
                                 Text::make(fn($get) => $get('response_time') . 'ms')
                                     ->grow(false)
                                     ->badge()
-                                    ->icon('tabler-clock-bolt')
+                                    ->icon('tabler-brand-speedtest')
                                     ->extraAttributes(['class' => 'pulse'])
                                     ->color(function ($get) {
                                         $time = $get('response_time');
@@ -397,7 +435,7 @@ class HttpRequest extends Component
                                         return 'danger';
                                     })
                                     ->visible(fn($get) => $get('response_ready')),
-                            ])->columns(12),
+                            ])->columns(1),
 
                             KeyValue::make('response_headers')
                                 ->hiddenLabel()
@@ -454,27 +492,26 @@ class HttpRequest extends Component
                             }
 
                             $body = str($get('request_body') ?? '');
-                            $headerVariables = self::findVariablePlaceholders($get('headers'));
-                            $bodyVariables = self::findVariablePlaceholders($body->toString());
-                            $baseUrlVariables = self::findVariablePlaceholders($baseUrl->toString());
-                            $endpointVariables = self::findVariablePlaceholders($endpoint);
+                            $headerVariables = self::findVariablePlaceholders($get('headers'), keepVariableWrapper: true);
+                            $bodyVariables = self::findVariablePlaceholders($body->toString(), keepVariableWrapper: true);
+                            $baseUrlVariables = self::findVariablePlaceholders($baseUrl->toString(), keepVariableWrapper: true);
+                            $endpointVariables = self::findVariablePlaceholders($endpoint, keepVariableWrapper: true);
 
                             $headersString = str(json_encode($headers));
 
-                            foreach ($headerVariables as $variable) {
-                                $headersString = $headersString->replace("{{{$variable}}}", Document::getVar($variable));
-                            }
+                            foreach ($headerVariables as $variable)
+                                $headersString = $headersString->replace(str($variable)->remove(['{{', '}}'])->toString(), Document::getVar($variable));
 
                             $headers = json_decode($headersString, true);
 
                             foreach ($bodyVariables as $variable)
-                                $body = $body->replace($variable, Document::getVar($variable, $variable));
+                                $body = $body->replace($variable, Document::getVar(str($variable)->remove(['{{', '}}'])->toString()));
 
                             foreach ($endpointVariables as $variable)
-                                $endpoint = $endpoint->replace($variable, Document::getVar($variable, $variable));
+                                $endpoint = $endpoint->replace($variable, Document::getVar(str($variable)->remove(['{{', '}}', '$', ':'])->toString()));
 
                             foreach ($baseUrlVariables as $variable)
-                                $baseUrl = $baseUrl->replace($variable, Document::getVar($variable, $variable));
+                                $baseUrl = $baseUrl->replace($variable, Document::getVar(str($variable)->remove(['{{', '}}', '$', ':'])->toString()));
 
                             $url = $baseUrl
                                 ->when(!str_ends_with($baseUrl, '/'), fn($str) => $str->append('/'))

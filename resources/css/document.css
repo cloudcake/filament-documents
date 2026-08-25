@@ -1,10 +1,12 @@
 @import '../../vendor/filament/filament/resources/css/theme.css';
+@source '../../src/Livewire/**/*';
 @source '../../**/*';
 
 @theme {
     --animate-background: background-move ease infinite;
     --animate-border: border 4s linear infinite;
     --animate-gradient: gradient 12s linear infinite;
+
 
     @keyframes border {
         to {
@@ -49,6 +51,10 @@
 
 @utility bg-blended {
     @apply shadow-sm shadow-primary-500/10 dark:shadow-inner dark:shadow-primary-950/50 bg-linear-to-br from-[var(--light-primary-color)] to-primary-50/70 dark:from-[var(--dark-primary-color)] dark:to-[var(--dark-secondary-color)]
+}
+
+@utility theme-bg {
+    @apply bg-linear-to-br from-white bg-fixed via-gray-50 to-primary-100/60 dark:bg-[var(--dark-primary-color)] dark:from-[var(--dark-primary-color)]/80 dark:via-[var(--dark-primary-color)]/80 dark:to-[var(--dark-secondary-color)]/80 shadow-md shadow-primary-800/10 dark:shadow-gray-950/10
 }
 
 @utility double-border-outer {
@@ -172,13 +178,21 @@
         row-gap: 0.5rem;
     }
 
+    .fi-header {
+        @apply mt-10;
+    }
+
     .fi-header-heading {
-        @apply text-4xl select-none;
+        @apply text-5xl/12 select-none mb-0 pb-2.5;
     }
 
     .fi-section-content-ctn,
     .fi-section-footer {
-        @apply border-0;
+        @apply border-0 py-3;
+    }
+
+    .fi-section {
+        @apply border-1 border-slate-300 dark:border-slate-800 rounded-2xl shadow-xs;
     }
 
     .rating-system-block {
@@ -206,6 +220,10 @@
     }
 
     .documentation {
+        & {
+            @apply font-normal font-stretch-ultra-condensed subpixel-antialiased;
+        }
+
         a:not([class]) u {
             @apply no-underline;
         }
@@ -215,23 +233,27 @@
         }
 
         h1:not([class]) {
-            @apply text-4xl mt-10 font-bold text-gradient-simple;
+            @apply text-4xl pt-10 pb-7 font-bold text-gradient-simple;
         }
 
         h2:not([class]) {
-            @apply text-3xl mt-8 font-semibold text-gradient-simple;
+            @apply text-3xl pt-8 pb-5 font-semibold text-gradient-simple;
         }
 
         h3:not([class]) {
-            @apply text-2xl mt-7 font-semibold text-gradient-simple;
+            @apply text-2xl pt-7 pb-4 font-semibold text-gradient-simple;
         }
 
         h4:not([class]) {
-            @apply text-xl mt-6 font-semibold text-gradient-simple;
+            @apply text-xl pt-6 pb-3 font-semibold text-gradient-simple;
         }
 
         p:not([class]) {
-            @apply my-5 text-sm text-gray-600 dark:text-gray-300 font-normal;
+            @apply mb-8 text-sm/7 text-gray-800 dark:text-gray-400 font-stretch-ultra-condensed subpixel-antialiased;
+        }
+
+        img {
+            @apply mx-auto my-16 select-none px-6 py-4 border border-slate-400 dark:border-slate-800 rounded-xl shadow dark:shadow-slate-900/80 shadow-2xl dark:shadow-lg bg-linear-to-tr from-primary-950/70 via-primary-950/95 to-primary-950;
         }
 
         ol {
@@ -310,7 +332,7 @@
         }
 
         :not(pre) > code {
-            @apply bg-[#d2d7ed] border-1 border-[#c4c6cd] dark:bg-[#1e2339] dark:border-[#2e344f] text-gray-800 dark:text-gray-400 rounded-lg px-2 py-0.5 font-medium font-mono;
+            @apply bg-[#d2d7ed] border-1 border-[#c4c6cd] dark:bg-[#1e2339] dark:border-[#2e344f] text-gray-800 dark:text-gray-400 rounded-full px-2 py-0.5 text-xs font-bold;
         }
 
         pre:has(code) {
@@ -318,12 +340,7 @@
         }
 
         table:not([class]) {
-            @apply my-6 w-full border-separate border-spacing-0 rounded-lg overflow-hidden border border-gray-300 dark:border-gray-900 text-sm simple-block;
-        }
-
-        table:not([class]) th,
-        table:not([class]) td {
-            @apply border-r border-b border-primary-400/5 dark:border-primary-600/5;
+            @apply my-6 w-full border-separate border-spacing-0 rounded-lg overflow-hidden border border-0 text-sm simple-block rounded-xl shadow dark:shadow-slate-900/80 shadow-2xl dark:shadow-lg;
         }
 
         table:not([class]) th:last-child,
@@ -335,19 +352,34 @@
             @apply border-b-0;
         }
 
+        table:not([class]) th {
+            @apply bg-primary-500/80 dark:bg-primary-400/20 border-primary-400/5;
+        }
+
         table:not([class]) th,
         table:not([class]) th td,
         table:not([class]) th p,
-        table:not([class]) th td p {
-            @apply bg-primary-600 text-gray-200 font-bold;
-        }
-
-        table:not([class]) th p {
-            @apply px-2 py-2 m-0 my-1 text-sm;
+        table:not([class]) th td p,
+        table:not([class]) tbody tr td p
+        {
+            @apply text-gray-700 dark:text-gray-300/80 font-stretch-ultra-condensed subpixel-antialiased;
         }
 
         table:not([class]) tbody tr td p {
-            @apply text-gray-700 dark:text-gray-300 px-2 py-1 m-0 my-1 text-sm;
+            @apply px-2 py-1 m-0 my-1 text-sm font-normal leading-5;
+        }
+
+
+        table:not([class]) th {
+            @apply text-sm !font-normal border-r border-b border-primary-400/10 dark:border-primary-400/10 px-2 py-3;
+        }
+
+        table:not([class]) th p {
+            @apply p-0 m-0;
+        }
+
+        table:not([class]) td {
+            @apply border-r border-b border-primary-400/10 dark:border-primary-400/10 px-1 py-2;
         }
 
         table:not([class]) {
