@@ -10,6 +10,7 @@ use Cloudcake\Documents\Livewire\Callout;
 use Cloudcake\Documents\Livewire\Code;
 use Cloudcake\Documents\Livewire\Form;
 use Cloudcake\Documents\Livewire\HttpRequest;
+use Cloudcake\Documents\Livewire\Mermaid;
 use Cloudcake\Documents\Livewire\PromotedComponent;
 use Cloudcake\Documents\Livewire\RichContent;
 use Cloudcake\Documents\Models\Category;
@@ -126,8 +127,9 @@ class ContentForm
                                         Code::block(),
                                         Form::block(),
                                         HttpRequest::block(),
-                                        RichContent::block(),
+                                        Mermaid::block(),
                                         PromotedComponent::block(),
+                                        RichContent::block(),
                                     ]),
                             ]),
 

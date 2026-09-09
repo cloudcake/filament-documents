@@ -11,7 +11,7 @@
             <x-filament::icon-button class="inline" color="primary" size="lg" icon="tabler-star-half-filled"/>
             <span class="text-md">
                 Was this content helpful to you?<br>
-                <span class="text-sm">
+                <span class="text-sm font-light">
                     @if ($this->document->setting(DocumentRatingSystemSetting::ShowRatingCount))
                         @php
                             $totalRatings = $this->record->ratings_total;
@@ -21,6 +21,8 @@
                     @endif
                     @if ($this->userRating['label'] ?? false)
                         You rated this content <b>{{ strtolower($this->userRating['label']) }}</b>.
+                    @else
+                        Please rate this content to help us improve where necessary.
                     @endif
                 </span>
             </span>
@@ -41,8 +43,8 @@
                         $shouldHighlight = $userHasRated && $userRating == $option['value'];
                 @endphp
                 <x-filament::icon-button class="ml-3"
-                                         color="{{ $shouldHighlight ? 'primary' : 'gray' }}"
-                                         size="lg"
+                                         color="{{ $shouldHighlight ? 'primary' : 'default' }}"
+                                         size="sm"
                                          wire:click="rate({{$option['value']}})"
                                          label="{{$option['label']}}"
                                          :icon="$option['icon']"/>
