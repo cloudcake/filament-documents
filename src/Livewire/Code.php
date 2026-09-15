@@ -2,40 +2,30 @@
 
 namespace Cloudcake\Documents\Livewire;
 
-use Filament\Forms\Components\Builder\Block;
 use Filament\Forms\Components\CodeEditor;
 use Filament\Forms\Components\CodeEditor\Enums\Language;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
-use Filament\Infolists\Components\CodeEntry;
 use Filament\Schemas\Components\Flex;
-use Filament\Schemas\Schema;
+use Illuminate\Support\HtmlString;
 use Phiki\Grammar\Grammar;
+use Stringable;
 
 class Code extends Component
 {
-    public static function block(): Block
+    protected static function getLabel(array|null $state = []): string|null
     {
-        return Block::make(static::class)
-            ->label(function ($state) {
-                if ($state['code'] ?? false) {
-                    return strtoupper($state['lang']) . ' Code';
-                }
+        if ($state['lang'] ?? false)
+            return str($state['lang'])->ucwords();
 
-                return 'Code';
-            })
-            ->icon('tabler-code')
-            ->components(fn($state) => static::editorSchema($state));
+        return null;
     }
 
-    public function schema(Schema $schema): Schema
+    protected static function getIcon(array|null $state = []): string|Stringable|null
     {
-        return $schema
-            ->statePath('data')
-            ->components(static::renderSchema($this->data));
+        return 'tabler-code';
     }
 
-    public static function editorSchema(array $data): array
+    protected static function getEditorSchema(array|null $state): array
     {
         return [
             Flex::make([
@@ -55,13 +45,21 @@ class Code extends Component
         ];
     }
 
-    public static function renderSchema(array $data): array
+    protected static function shouldPreview(): bool
     {
+        return false;
+    }
+
+    protected static function getRenderSchema(array|null $state): array
+    {
+        $code = $state['code'] ?? '';
+        $lang = $state['lang'] ?? Language::Json->value;
+
         return [
             CodeEditor::make('code')
                 ->hiddenLabel()
-                ->afterStateHydrated(fn($component) => $component->state($data['code']))
-                ->language(Language::tryFrom($data['lang'] ?? ''))
+                ->afterStateHydrated(fn($component) => $component->state($code))
+                ->language(Language::tryFrom($lang))
                 ->disabled()
         ];
     }

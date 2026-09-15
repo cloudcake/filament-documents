@@ -7,7 +7,6 @@
     --animate-border: border 4s linear infinite;
     --animate-gradient: gradient 12s linear infinite;
 
-
     @keyframes border {
         to {
             --border-angle: 360deg;
@@ -149,6 +148,10 @@
     @apply w-4 h-4 fill-slate-800 dark:fill-slate-50 shrink-0 ml-4 mr-2;
 }
 
+.mermaid-field-container {
+    @apply border-black/10 dark:border-white/10 border-dashed border-1 rounded-md;
+}
+
 .document-page {
     .pagination-button {
         @apply simple-block flex max-w-md w-full items-center gap-5 rounded-2xl border border-gray-300 dark:border-gray-800 p-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg;
@@ -189,10 +192,6 @@
     .fi-section-content-ctn,
     .fi-section-footer {
         @apply border-0 py-3;
-    }
-
-    .fi-section {
-        @apply border-1 border-slate-300 dark:border-slate-800 rounded-2xl shadow-xs;
     }
 
     .rating-system-block {

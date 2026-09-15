@@ -15,33 +15,24 @@ use Filament\Schemas\Components\Flex;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Text;
-use Filament\Schemas\Schema;
 use Filament\Support\Enums\Alignment;
 use Filament\Support\Enums\Width;
+use Illuminate\Support\HtmlString;
+use Stringable;
 
 class Form extends Component
 {
-    public static function block(): Block
+    protected static function getLabel(array|null $state = []): string|null
     {
-        return Block::make(static::class)
-            ->label(function ($state) {
-                if ($state['name'] ?? false)
-                    return "Form: {$state['name']}";
-
-                return 'Form';
-            })
-            ->icon('tabler-input-check')
-            ->components(fn($state) => static::editorSchema($state));
+        return $state['name'] ?? null;
     }
 
-    public function schema(Schema $schema): Schema
+    protected static function getIcon(array|null $state = []): string|Stringable|null
     {
-        return $schema
-            ->statePath('data')
-            ->components(fn() => static::renderSchema($this->data));
+       return 'tabler-input-check';
     }
 
-    public static function editorSchema(array $data): array
+    protected static function getEditorSchema(array|null $state): array
     {
         return [
             Flex::make([
@@ -112,13 +103,13 @@ class Form extends Component
         ];
     }
 
-    public static function renderSchema(array $data): array
+    protected static function getRenderSchema(array|null $state): array
     {
         $schema = [];
 
-        $mode = $data['mode'] ?? 'form';
+        $mode = $state['mode'] ?? 'form';
 
-        foreach ($data['fields'] ?? [] as $field) {
+        foreach ($state['fields'] ?? [] as $field) {
             $label = $field['data']['name'] ?? '';
             $stateName = str($label)->lower()->snake()->toString();
             $columnSpan = $field['data']['column_span'] ?? 1;
@@ -160,12 +151,12 @@ class Form extends Component
 
         if ($mode === 'modal' || $mode === 'slideover')
             return [
-                Action::make($data['name'])
-                    ->label($data['name'])
-                    ->icon($data['icon'] ?? null)
+                Action::make($state['name'])
+                    ->label($state['name'])
+                    ->icon($state['icon'] ?? null)
                     ->modal()
-                    ->modalIcon($data['icon'] ?? null)
-                    ->modalWidth(Width::tryFrom($data['width'] ?? Width::ExtraLarge->value))
+                    ->modalIcon($state['icon'] ?? null)
+                    ->modalWidth(Width::tryFrom($state['width'] ?? Width::ExtraLarge->value))
                     ->modalSubmitActionLabel('Save')
                     ->slideOver($mode === 'slideover')
                     ->action(function ($data) {
@@ -176,9 +167,9 @@ class Form extends Component
             ];
 
         return [
-            Section::make($data['name'] ?? null)
-                ->columns($data['columns'] ?? 1)
-                ->icon($data['icon'] ?? null)
+            Section::make($state['name'] ?? null)
+                ->columns($state['columns'] ?? 1)
+                ->icon($state['icon'] ?? null)
                 ->columnSpanFull()
                 ->schema($schema)
         ];

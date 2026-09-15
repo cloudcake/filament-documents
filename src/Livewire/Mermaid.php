@@ -5,41 +5,32 @@ namespace Cloudcake\Documents\Livewire;
 use Cloudcake\Components\Enums\MermaidTheme;
 use Cloudcake\Components\Forms\Components\MermaidInput;
 use Cloudcake\Components\Infolists\Components\MermaidEntry;
-use Filament\Forms\Components\Builder\Block;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
-use Filament\Schemas\Components\Text;
-use Filament\Schemas\Schema;
+use Illuminate\Support\HtmlString;
+use Stringable;
 
 class Mermaid extends Component
 {
-    public static function block(): Block
+    protected static function getLabel(array|null $state = []): string|null
     {
-        return Block::make(static::class)
-            ->label(function ($state) {
-                if ($state['title'] ?? false) {
-                    return $state['title'];
-                }
-
-                return 'Mermaid Diagram';
-            })
-            ->icon('tabler-graph')
-            ->components(fn($state) => static::editorSchema($state));
+        return $state['name'] ?? null;
     }
 
-    public function schema(Schema $schema): Schema
+    protected static function getIcon(array|null $state = []): string|Stringable|null
     {
-        return $schema
-            ->statePath('data')
-            ->components(static::renderSchema($this->data));
+        return 'tabler-graph';
     }
 
-    public static function editorSchema(array $data): array
+    protected static function shouldPreview(): bool
+    {
+        return false;
+    }
+
+    protected static function getEditorSchema(array|null $state): array
     {
         return [
-            TextInput::make('title')
-                ->label('Title')
+            TextInput::make('name')
                 ->inlineLabel()
                 ->grow()
                 ->required(),
@@ -48,37 +39,23 @@ class Mermaid extends Component
 
             Toggle::make('allow_zooming'),
 
-//            Select::make('theme')
-//                ->live()
-//                ->options(MermaidTheme::class),
-//
-//            Select::make('dark_theme')
-//                ->live()
-//                ->options(MermaidTheme::class),
-
             MermaidInput::make('data')
                 ->theme(MermaidTheme::Redux)
                 ->darkTheme(MermaidTheme::ReduxDarkColor)
-                ->rows(15)
-                ->placeholder("graph TD\n    A[Start] --> B{Condition?}\n    B -->|Yes| C[Process A]\n    B -->|No| D[Process B]"),
+                ->rows(15),
         ];
     }
 
-    public static function renderSchema(array $data): array
+    protected static function getRenderSchema(array|null $state): array
     {
-        $components = [];
-
-        if ($data['title'] ?? false)
-            $components[] = Text::make($data['title'])->icon('tabler-graph')->badge();
-
-        $components[] = MermaidEntry::make('data')
-            ->theme($data['theme'] ?? null)
-            ->theme(MermaidTheme::Redux)
-            ->darkTheme(MermaidTheme::ReduxDarkColor)
-            ->panning($data['allow_panning'] ?? false)
-            ->zooming($data['allow_zooming'] ?? false)
-            ->afterStateHydrated(fn($component) => $component->state($data['data']));
-
-        return $components;
+        return [
+            MermaidEntry::make('data')
+                ->theme($state['theme'] ?? null)
+                ->theme(MermaidTheme::Redux)
+                ->darkTheme(MermaidTheme::ReduxDarkColor)
+                ->panning($state['allow_panning'] ?? false)
+                ->zooming($state['allow_zooming'] ?? false)
+                ->afterStateHydrated(fn($component) => $component->state($state['data']))
+        ];
     }
 }

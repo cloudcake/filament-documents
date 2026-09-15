@@ -3,67 +3,76 @@
 namespace Cloudcake\Documents\Livewire;
 
 use Cloudcake\Components\Forms\Components\IconPicker;
-use Filament\Forms\Components\Builder\Block;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Flex;
-use Filament\Schemas\Schema;
+use Filament\Support\Colors\Color;
 use Illuminate\Support\HtmlString;
+use Stringable;
 
 class Callout extends Component
 {
-    public static function block(): Block
-    {
-        return Block::make(static::class)
-                    ->label(function ($state) {
-                        if ($state['heading'] ?? false) {
-                            return "Callout: {$state['heading']}";
-                        }
-
-                        return 'Callout';
-                    })
-                    ->icon('tabler-notification')
-                    ->components(fn($state) => static::editorSchema($state));
-    }
-
-    public function schema(Schema $schema): Schema
-    {
-        return $schema
-            ->statePath('data')
-            ->components(fn($state) => static::renderSchema($this->data));
-    }
-
-    public static function editorSchema(array $data): array
+    protected static function getEditorSchema(array|null $state = []): array
     {
         return [
             Flex::make([
-                IconPicker::make('icon')->grow(false),
-                TextInput::make('heading')->required(),
-                Select::make('colour')->required()->options([
-                    'gray'    => 'Default',
-                    'primary' => 'Primary',
-                    'success' => 'Success',
-                    'danger'  => 'Danger',
-                    'warning' => 'Warning',
-                    'info'    => 'Informative',
-                ])->grow(false),
+                IconPicker::make('icon')
+                    ->grow(false)
+                    ->live(),
+
+                TextInput::make('heading')
+                    ->live()
+                    ->required(),
+
+                Select::make('colour')
+                    ->live()
+                    ->required()
+                    ->options(collect(Color::all())->flatMap(fn($v, $k) => [$k => str($k)->ucfirst()])->sort())
+                    ->searchable()
+                    ->grow(false),
             ])->columns(3),
+
             RichEditor::make('description')
+                ->live()
                 ->toolbarButtons(['bold', 'italic', 'underline', 'strike', 'subscript', 'superscript', 'link'])
                 ->required(),
         ];
     }
 
-    public static function renderSchema(array $data): array
+    protected static function getRenderSchema(array|null $state): array
     {
+        $heading = $state['heading'] ?? 'Untitled';
+        $description = $state['description'] ?? 'No description';
+        $colour = $state['colour'] ?? null;
+        $icon = $state['icon'] ?? null;
+
+        if ($colour) {
+            $colour = Color::all()[$colour] ?? Color::Neutral;
+        } else
+            $colour = Color::Neutral;
+
+        if ($description)
+            $description = new HtmlString(RichEditor\RichContentRenderer::make($description)->toHtml());
+
         return [
             \Filament\Schemas\Components\Callout::make()
-                                                ->heading($data['heading'])
-                                                ->description(new HtmlString(RichEditor\RichContentRenderer::make($data['description'])->toHtml()))
-                                                ->color($data['colour'] ?? 'gray')
-                                                ->icon($data['icon'] ?? null)
-                                                ->dehydrated(false),
+                ->heading($heading)
+                ->description($description)
+                ->color($colour)
+                ->icon($icon)
+                ->iconColor($colour)
+                ->dehydrated(false),
         ];
+    }
+
+    protected static function getLabel(array|null $state = []): string|null
+    {
+        return $state['heading'] ?? null;
+    }
+
+    protected static function getIcon(array|null $state = []): string|Stringable|null
+    {
+        return 'tabler-notification';
     }
 }

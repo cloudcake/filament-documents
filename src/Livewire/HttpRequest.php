@@ -7,13 +7,11 @@ use Cloudcake\Documents\Enums\HttpHost;
 use Cloudcake\Documents\Enums\HttpMethod;
 use Exception;
 use Filament\Actions\Action;
-use Filament\Forms\Components\Builder\Block;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\CodeEditor;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\CodeEntry;
 use Filament\Infolists\Components\TextEntry;
@@ -21,136 +19,29 @@ use Filament\Schemas\Components\Fieldset;
 use Filament\Schemas\Components\Flex;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Text;
-use Filament\Schemas\Schema;
 use Filament\Support\Enums\FontWeight;
 use GuzzleHttp\Exception\ConnectException;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\HtmlString;
+use Stringable;
 
 class HttpRequest extends Component
 {
-    public static function block(): Block
+    protected static function getLabel(array|null $state = []): string|null
     {
-        return Block::make(static::class)
-            ->label(function ($state) {
-                if ($state['endpoint'] ?? false) {
-                    return "{$state['method']} {$state['endpoint']}";
-                }
+        if ($state['endpoint'] ?? false)
+            return "{$state['method']} {$state['endpoint']}";
 
-                return 'HTTP Request';
-            })
-            ->icon('tabler-api')
-            ->columns(6)
-            ->components(fn($state) => static::editorSchema($state));
+        return null;
     }
 
-    public function schema(Schema $schema): Schema
+    protected static function getIcon(array|null $state = []): string|Stringable|null
     {
-        return $schema
-            ->statePath('data')
-            ->extraAttributes(['class' => 'my-10'])
-            ->components(fn($state) => static::renderSchema($this->data));
+        return 'tabler-api';
     }
 
-    private static function findVariablePlaceholders(mixed $data, bool $keepVariableWrapper = false): array
-    {
-        if (blank($data)) {
-            return [];
-        }
-
-        if (is_array($data))
-            $data = implode('', $data);
-
-        preg_match_all('/\{\{([^}]+)}}/', $data, $matches);
-
-        return collect($matches)
-            ->flatten()
-            ->values()
-            ->unique()
-            ->filter(fn($match) => !str($match)->contains('{{'))
-            ->when($keepVariableWrapper)
-            ->map(fn($match) => str($match)->wrap('{{', '}}'))
-            ->toArray();
-    }
-
-    private static function findPlaceholdersInEndpoint(?string $endpoint = ''): array
-    {
-        if (empty($endpoint)) {
-            return [];
-        }
-
-        $path = parse_url($endpoint, PHP_URL_PATH) ?? $endpoint;
-
-        if (empty($path)) {
-            return [];
-        }
-
-        $pattern = '/(?<=\/){([a-zA-Z][a-zA-Z0-9_-]*)}|(?<=\/[:$])([a-zA-Z][a-zA-Z0-9_-]*)(?=\/|$)/';
-
-        preg_match_all($pattern, $path, $matches);
-
-        $pathParameters = array_filter(array_merge($matches[1] ?? [], $matches[2] ?? []));
-
-        return collect($pathParameters)->filter(fn($param) => !empty($param))->all();
-    }
-
-    private static function findQueryParametersInUrl(?string $url = ''): array
-    {
-        if (empty($url)) {
-            return [];
-        }
-
-        $queryString = parse_url($url, PHP_URL_QUERY);
-
-        if (empty($queryString)) {
-            return [];
-        }
-
-        parse_str($queryString, $params);
-
-        return $params;
-    }
-
-    private static function colorizeEndpoint(string|null $endpoint = null, bool $withQueryParameters = false): HtmlString|string|null
-    {
-        if (empty($endpoint))
-            return $endpoint;
-
-        $placeholders = self::findPlaceholdersInEndpoint($endpoint);
-        $string = str($endpoint)->when(!$withQueryParameters, fn($str) => $str->before('?'));
-
-        foreach ($placeholders as $parameter) {
-            $string = $string->replace([
-                '$' . $parameter,
-                ':' . $parameter,
-                '{' . $parameter . '}',
-                '{{' . $parameter . '}}',
-            ],
-                "<span class='text-primary-600 font-mono px-[3px] bg-gray-200 dark:bg-gray-950 rounded-lg'>$parameter</span>"
-            );
-        }
-
-        if ($withQueryParameters) {
-            $queryParams = self::findQueryParametersInUrl($endpoint);
-
-            foreach ($queryParams as $queryParam => $value) {
-                $string = $string->replace([
-                    "$queryParam=",
-                ], [
-                    "<span class='text-primary-600'>$queryParam</span>=",
-                ]);
-            }
-        }
-
-        $string = $string
-            ->prepend('<span class="text-default">')
-            ->append('</span>');
-
-        return $string->toHtmlString();
-    }
-
-    public static function editorSchema(array $data): array
+    protected static function getEditorSchema(array|null $state): array
     {
         return [
             Hidden::make('base_url')
@@ -170,7 +61,7 @@ class HttpRequest extends Component
                     ->label('Host')
                     ->columnSpan(1)
                     ->live()
-                    ->afterStateUpdated(fn($state, $set) => $set('base_url', match ($data) {
+                    ->afterStateUpdated(fn($state, $set) => $set('base_url', match ($state) {
                         HttpHost::Current => url()->to('/'),
                         default => null
                     }))
@@ -284,11 +175,11 @@ class HttpRequest extends Component
         ];
     }
 
-    public static function renderSchema(array $data): array
+    protected static function getRenderSchema(array|null $state): array
     {
-        $method = HttpMethod::tryFrom(strtoupper($data['method'] ?? ''));
-        $endpoint = static::colorizeEndpoint($data['endpoint'] ?? '');
-        $baseUrl = $data['base_url'] ?? url()->to($data['endpoint'] ?? '');
+        $method = HttpMethod::tryFrom(strtoupper($state['method'] ?? ''));
+        $endpoint = static::colorizeEndpoint($state['endpoint'] ?? '');
+        $baseUrl = $state['base_url'] ?? url()->to($state['endpoint'] ?? '');
 
         return [
             Section::make(str("HTTP <span class='font-semibold'>{$method->getLabel()}</span> $endpoint")->toHtmlString())
@@ -302,7 +193,7 @@ class HttpRequest extends Component
                         ->hiddenLabel()
                         ->keyLabel('Route Parameter')
                         ->valueLabel('Value')
-                        ->valuePlaceholder(fn($state) => "Enter " . array_key_first($data) . " Value")
+                        ->valuePlaceholder(fn($state) => "Enter " . array_key_first($state) . " Value")
                         ->editableValues(fn($get) => $get('allow_request_route_edits') ?? false)
                         ->editableKeys(false)
                         ->deletable(false)
@@ -313,7 +204,7 @@ class HttpRequest extends Component
                         ->hiddenLabel()
                         ->keyLabel('Query Parameter')
                         ->valueLabel('Value')
-                        ->valuePlaceholder(fn($state) => "Enter " . array_key_first($data) . " Value")
+                        ->valuePlaceholder(fn($state) => "Enter " . array_key_first($state) . " Value")
                         ->editableValues(fn($get) => $get('allow_request_query_edits') ?? false)
                         ->editableKeys(false)
                         ->deletable(false)
@@ -324,7 +215,7 @@ class HttpRequest extends Component
                         ->hiddenLabel()
                         ->keyLabel('Header')
                         ->valueLabel('Value')
-                        ->valuePlaceholder(fn($state) => "Enter " . array_key_first($data) . " Value")
+                        ->valuePlaceholder(fn($state) => "Enter " . array_key_first($state) . " Value")
                         ->editableValues(fn($get) => $get('allow_request_header_edits') ?? false)
                         ->editableKeys(false)
                         ->addable(false)
@@ -563,5 +454,102 @@ class HttpRequest extends Component
 
                 ])
         ];
+    }
+
+    private static function findVariablePlaceholders(mixed $data, bool $keepVariableWrapper = false): array
+    {
+        if (blank($data)) {
+            return [];
+        }
+
+        if (is_array($data))
+            $data = implode('', $data);
+
+        preg_match_all('/\{\{([^}]+)}}/', $data, $matches);
+
+        return collect($matches)
+            ->flatten()
+            ->values()
+            ->unique()
+            ->filter(fn($match) => !str($match)->contains('{{'))
+            ->when($keepVariableWrapper)
+            ->map(fn($match) => str($match)->wrap('{{', '}}'))
+            ->toArray();
+    }
+
+    private static function findPlaceholdersInEndpoint(?string $endpoint = ''): array
+    {
+        if (empty($endpoint)) {
+            return [];
+        }
+
+        $path = parse_url($endpoint, PHP_URL_PATH) ?? $endpoint;
+
+        if (empty($path)) {
+            return [];
+        }
+
+        $pattern = '/(?<=\/){([a-zA-Z][a-zA-Z0-9_-]*)}|(?<=\/[:$])([a-zA-Z][a-zA-Z0-9_-]*)(?=\/|$)/';
+
+        preg_match_all($pattern, $path, $matches);
+
+        $pathParameters = array_filter(array_merge($matches[1] ?? [], $matches[2] ?? []));
+
+        return collect($pathParameters)->filter(fn($param) => !empty($param))->all();
+    }
+
+    private static function findQueryParametersInUrl(?string $url = ''): array
+    {
+        if (empty($url)) {
+            return [];
+        }
+
+        $queryString = parse_url($url, PHP_URL_QUERY);
+
+        if (empty($queryString)) {
+            return [];
+        }
+
+        parse_str($queryString, $params);
+
+        return $params;
+    }
+
+    private static function colorizeEndpoint(string|null $endpoint = null, bool $withQueryParameters = false): HtmlString|string|null
+    {
+        if (empty($endpoint))
+            return $endpoint;
+
+        $placeholders = self::findPlaceholdersInEndpoint($endpoint);
+        $string = str($endpoint)->when(!$withQueryParameters, fn($str) => $str->before('?'));
+
+        foreach ($placeholders as $parameter) {
+            $string = $string->replace([
+                '$' . $parameter,
+                ':' . $parameter,
+                '{' . $parameter . '}',
+                '{{' . $parameter . '}}',
+            ],
+                "<span class='text-primary-600 font-mono px-[3px] bg-gray-200 dark:bg-gray-950 rounded-lg'>$parameter</span>"
+            );
+        }
+
+        if ($withQueryParameters) {
+            $queryParams = self::findQueryParametersInUrl($endpoint);
+
+            foreach ($queryParams as $queryParam => $value) {
+                $string = $string->replace([
+                    "$queryParam=",
+                ], [
+                    "<span class='text-primary-600'>$queryParam</span>=",
+                ]);
+            }
+        }
+
+        $string = $string
+            ->prepend('<span class="text-default">')
+            ->append('</span>');
+
+        return $string->toHtmlString();
     }
 }

@@ -13,6 +13,7 @@ use Cloudcake\Documents\Livewire\HttpRequest;
 use Cloudcake\Documents\Livewire\Mermaid;
 use Cloudcake\Documents\Livewire\PromotedComponent;
 use Cloudcake\Documents\Livewire\RichContent;
+use Cloudcake\Documents\Livewire\Tabs;
 use Cloudcake\Documents\Models\Category;
 use Cloudcake\Documents\Models\Component;
 use Cloudcake\Documents\Models\Content;
@@ -46,6 +47,7 @@ class ContentForm
                     ->columnSpanFull()
                     ->schema([
                         Section::make('Content')
+                            ->icon('tabler-text-plus')
                             ->columnSpan(2)
                             ->components([
                                 TextInput::make('title')
@@ -122,15 +124,7 @@ class ContentForm
                                                 $component->state($state);
                                             })
                                     ])
-                                    ->blocks([
-                                        Callout::block(),
-                                        Code::block(),
-                                        Form::block(),
-                                        HttpRequest::block(),
-                                        Mermaid::block(),
-                                        PromotedComponent::block(),
-                                        RichContent::block(),
-                                    ]),
+                                    ->blocks(\Cloudcake\Documents\Livewire\Component::blocks()),
                             ]),
 
                         Hidden::make('categoryPrivateHint')->dehydrated(false),

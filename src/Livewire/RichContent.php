@@ -2,41 +2,34 @@
 
 namespace Cloudcake\Documents\Livewire;
 
-use Filament\Forms\Components\Builder\Block;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\RichEditor\RichContentRenderer;
-use Filament\Forms\Components\TagsInput;
 use Filament\Schemas\Components\Html;
-use Filament\Schemas\Components\Text;
-use Filament\Schemas\Schema;
 use Illuminate\Support\HtmlString;
+use Stringable;
 
 class RichContent extends Component
 {
-    public static function block(): Block
+    protected static function getLabel(array|null $state = []): string|null
     {
-        return Block::make(static::class)
-            ->label(function ($state) {
+        if ($state['raw'] ?? false) {
+            return str(RichContentRenderer::make($state['raw'])->toText())->before(PHP_EOL)->limit(32, preserveWords: true);
+        }
 
-                if ($state['raw'] ?? false) {
-                    return str(RichContentRenderer::make($state['raw'])->toText())->before(PHP_EOL)->limit(32, preserveWords: true);
-                }
-
-                return 'Rich Content';
-            })
-            ->icon('tabler-html')
-            ->components(fn($state) => static::editorSchema($state));
+        return null;
     }
 
-    public function schema(Schema $schema): Schema
+    protected static function getIcon(array|null $state = []): string|Stringable|null
     {
-        return $schema
-            ->statePath('data')
-            ->extraAttributes(['class' => 'documentation'])
-            ->components(fn($state) => static::renderSchema($this->data));
+        return 'tabler-html';
     }
 
-    public static function editorSchema(array $data): array
+    protected static function shouldPreview(): bool
+    {
+        return false;
+    }
+
+    protected static function getEditorSchema(array|null $state): array
     {
         return [
             RichEditor::make('raw')
@@ -51,10 +44,10 @@ class RichContent extends Component
         ];
     }
 
-    public static function renderSchema(array $data): array
+    protected static function getRenderSchema(array|null $state): array
     {
         return [
-            Html::make(RichContentRenderer::make($data['raw'])->toHtml())->toHtmlString()
+            Html::make(RichContentRenderer::make($state['raw'])->toHtml())->toHtmlString(),
         ];
     }
 }
