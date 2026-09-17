@@ -5,12 +5,14 @@ namespace Cloudcake\Documents\Livewire;
 use Cloudcake\Components\Enums\MermaidTheme;
 use Cloudcake\Components\Forms\Components\MermaidInput;
 use Cloudcake\Components\Infolists\Components\MermaidEntry;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Flex;
 use Illuminate\Support\HtmlString;
 use Stringable;
 
-class Mermaid extends Component
+class Graph extends Component
 {
     protected static function getLabel(array|null $state = []): string|null
     {
@@ -30,14 +32,21 @@ class Mermaid extends Component
     protected static function getEditorSchema(array|null $state): array
     {
         return [
-            TextInput::make('name')
-                ->inlineLabel()
-                ->grow()
-                ->required(),
+            Flex::make([
+                TextInput::make('name')
+                    ->inlineLabel()
+                    ->grow()
+                    ->required(),
 
-            Toggle::make('allow_panning'),
-
-            Toggle::make('allow_zooming'),
+                Select::make('type')
+                    ->grow(false)
+                    ->inlineLabel()
+                    ->options([
+                        'bar' => 'Bar Chart',
+                        'line' => 'Line Chart',
+                        'mermaid' => 'Mermaid Graph',
+                    ]),
+            ]),
 
             MermaidInput::make('data')
                 ->theme(MermaidTheme::Redux)
@@ -53,8 +62,9 @@ class Mermaid extends Component
                 ->theme($state['theme'] ?? null)
                 ->theme(MermaidTheme::Redux)
                 ->darkTheme(MermaidTheme::ReduxDarkColor)
-                ->panning($state['allow_panning'] ?? false)
-                ->zooming($state['allow_zooming'] ?? false)
+                ->autosize()
+                ->panning()
+                ->zooming()
                 ->afterStateHydrated(fn($component) => $component->state($state['data']))
         ];
     }

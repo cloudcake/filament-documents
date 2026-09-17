@@ -5,6 +5,7 @@ namespace Cloudcake\Documents\Livewire;
 use Filament\Forms\Components\CodeEditor;
 use Filament\Forms\Components\CodeEditor\Enums\Language;
 use Filament\Forms\Components\Select;
+use Filament\Infolists\Components\CodeEntry;
 use Filament\Schemas\Components\Flex;
 use Illuminate\Support\HtmlString;
 use Phiki\Grammar\Grammar;
@@ -56,11 +57,10 @@ class Code extends Component
         $lang = $state['lang'] ?? Language::Json->value;
 
         return [
-            CodeEditor::make('code')
+            CodeEntry::make('code-' . str()->uuid())
                 ->hiddenLabel()
-                ->afterStateHydrated(fn($component) => $component->state($code))
-                ->language(Language::tryFrom($lang))
-                ->disabled()
+                ->default($code)
+                ->grammar(Grammar::tryFrom($lang)),
         ];
     }
 }

@@ -54,6 +54,11 @@ class Section extends Component
                 Toggle::make('collapsed'),
 
                 Toggle::make('collapsible'),
+
+// With pristine theme this currently has no impact
+//                Toggle::make('compact'),
+//
+//                Toggle::make('secondary'),
             ]),
 
             Builder::make('content')
@@ -91,6 +96,8 @@ class Section extends Component
                 ->collapsed($state['collapsed'] ?? false)
                 ->collapsible($state['collapsible'] ?? false)
                 ->description($state['description'] ?? null)
+                ->compact($state['compact'] ?? false)
+                ->secondary($state['secondary'] ?? false)
                 ->columns($state['columns'] ?? 1)
                 ->columnSpanFull()
                 ->schema($content)

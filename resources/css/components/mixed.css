@@ -51,8 +51,8 @@
     @apply w-4 h-4 fill-slate-800 dark:fill-slate-50 shrink-0 ml-4 mr-2;
 }
 
-.mermaid-field-container {
-    @apply border-black/10 dark:border-white/10 border-dashed border-1 rounded-md;
+.mermaid-render #svg-pan-zoom-zoom-in {
+    @apply !p-3 bg-gray-200 dark:bg-gray-900;
 }
 
 .documentation {
@@ -211,8 +211,7 @@
         @apply p-0 m-0;
     }
 
-    table:not([class]) tbody tr td p
-    {
+    table:not([class]) tbody tr td p {
         @apply text-gray-700 dark:text-gray-300/80 font-stretch-ultra-condensed subpixel-antialiased px-2 py-1 m-0 my-1 text-sm font-normal leading-5;
     }
 
@@ -269,7 +268,7 @@
     }
 
     .pagination-button {
-        @apply  flex max-w-md w-full items-center gap-5 rounded-2xl border border-gray-300 dark:border-gray-800 p-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg;
+        @apply flex max-w-md w-full items-center gap-5 rounded-2xl border border-gray-300 dark:border-gray-800 p-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg;
     }
 
     .pagination-previous-button {
