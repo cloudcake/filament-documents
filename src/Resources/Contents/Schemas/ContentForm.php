@@ -35,7 +35,9 @@ use Filament\Schemas\Schema;
 use Filament\Support\Enums\Alignment;
 use Filament\Support\Enums\Size;
 use Filament\Support\Enums\Width;
+use Illuminate\Support\HtmlString;
 use Illuminate\Validation\Rules\Unique;
+use JetBrains\PhpStorm\NoReturn;
 
 class ContentForm
 {
@@ -49,6 +51,18 @@ class ContentForm
                         Section::make('Content')
                             ->icon('tabler-text-plus')
                             ->columnSpan(2)
+                            ->headerActions([
+                                Action::make('convert_to_component')
+                                    ->color('gray')
+                                    ->iconButton()
+                                    ->tooltip('Convert to Component')
+                                    ->icon('tabler-star')
+                                    ->modalWidth(Width::Small)
+                                    ->schema(fn(array $arguments, Section $component) => static::promotionSchema($arguments, $component))
+                                    ->action(fn(array $arguments, array $data, Section $component) => static::promote($arguments, $data, $component))
+                                    ->modalDescription(new HtmlString("This action will convert the page into a reusable component and replace all content with the component reference.<br><br>Are you sure you want to do this?"))
+                                    ->requiresConfirmation()
+                            ])
                             ->components([
                                 TextInput::make('title')
                                     ->required()
@@ -63,6 +77,7 @@ class ContentForm
                                     ->addActionAlignment(Alignment::Left)
                                     ->addActionLabel('Add Content')
                                     ->collapsible()
+                                    ->cloneable()
                                     ->collapsed(fn($operation) => $operation === 'edit')
                                     ->collapseAllAction(fn($action) => $action->visible(false))
                                     ->expandAllAction(fn($action) => $action->visible(false))
@@ -84,44 +99,27 @@ class ContentForm
                                             })
                                             ->modal()
                                             ->modalWidth(Width::Medium)
-                                            ->schema(function (array $arguments, Builder $component) {
-                                                $itemSchema = $component->getState()[$arguments['item']];
-                                                $itemType = $itemSchema['type'];
-
-                                                return [
-                                                    TextInput::make('name')
-                                                        ->required(),
-
-                                                    Text::make(str($itemType)
-                                                        ->afterLast('\\')
-                                                        ->kebab()
-                                                        ->replace(['-', '_'], ' ')
-                                                        ->apa())->badge()->color('primary')
-                                                ];
-                                            })
+                                            ->schema(fn(array $arguments, Builder $component) => static::promotionSchema($arguments, $component))
                                             ->modalSubmitActionLabel('Promote')
-                                            ->action(function (array $arguments, array $data, Builder $component): void {
-                                                $itemData = $component->getItemState($arguments['item']);
+                                            ->action(fn(array $arguments, array $data, Builder $component) => static::promote($arguments, $data, $component)),
+
+                                        Action::make('preview')
+                                            ->modal()
+                                            ->modalWidth(Width::FiveExtraLarge)
+                                            ->tooltip('Preview')
+                                            ->modalSubmitAction(false)
+                                            ->modalCancelActionLabel('Dismiss')
+                                            ->icon('tabler-eye')
+                                            ->schema(function (array $arguments, array $data, Builder $component) {
                                                 $itemSchema = $component->getState()[$arguments['item']];
 
-                                                $model = new Component();
-                                                $model->name = $data['name'];
-                                                $model->schema = $itemSchema['data'];
-                                                $model->type = $itemSchema['type'];
-                                                $model->creator_id = auth()->id();
-                                                $model->creator_type = auth()->user()->getMorphClass();
-                                                $model->save();
+                                                /** @var class-string<\Cloudcake\Documents\Livewire\Component> $class */
+                                                $class = $itemSchema['type'];
 
-                                                $state = $component->getState();
+                                                if (class_exists($class))
+                                                    return $class::renderPreview($itemSchema['data'] ?? []);
 
-                                                $state[$arguments['item']] = [
-                                                    'data' => [
-                                                        'id' => $model->id,
-                                                    ],
-                                                    'type' => PromotedComponent::class,
-                                                ];
-
-                                                $component->state($state);
+                                                return [];
                                             })
                                     ])
                                     ->blocks(\Cloudcake\Documents\Livewire\Component::blocks()),
@@ -339,5 +337,53 @@ class ContentForm
                             ]),
                     ]),
             ]);
+    }
+
+    #[NoReturn]
+    private static function promote(array $arguments, array $data, Builder|Section $component): void
+    {
+        $itemSchema = $component->getState()[$arguments['item']];
+
+        $model = new Component();
+        $model->name = $data['name'];
+        $model->schema = $itemSchema['data'];
+        $model->type = $itemSchema['type'];
+        $model->creator_id = auth()->id();
+        $model->creator_type = auth()->user()->getMorphClass();
+        $model->save();
+
+        $state = $component->getState();
+
+        $state[$arguments['item']] = [
+            'data' => [
+                'id' => $model->id,
+            ],
+            'type' => PromotedComponent::class,
+        ];
+
+        $component->state($state);
+    }
+
+    private static function promotionSchema(array $arguments, Builder|Section $component): array
+    {
+        if ($component instanceof Builder) {
+            $itemSchema = $component->getState()[$arguments['item']];
+            $itemType = $itemSchema['type'];
+        }
+        else {
+            $itemSchema = $component->getState();
+            $itemType = 'layout';
+        }
+
+        return [
+            TextInput::make('name')
+                ->required(),
+
+            Text::make(str($itemType)
+                ->afterLast('\\')
+                ->kebab()
+                ->replace(['-', '_'], ' ')
+                ->apa())->badge()->color('primary')
+        ];
     }
 }

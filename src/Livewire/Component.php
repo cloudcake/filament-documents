@@ -30,6 +30,7 @@ abstract class Component extends LivewireComponent implements HasSchemas, HasAct
         Code::class,
         Fieldset::class,
         Form::class,
+        Heading::class,
         HttpRequest::class,
         Layout::class,
         Mermaid::class,
@@ -108,7 +109,6 @@ abstract class Component extends LivewireComponent implements HasSchemas, HasAct
             ->label(fn($state) => static::label($state))
             ->icon(fn($state) => static::getIcon($state))
             ->components(fn($state) => [
-               // ...static::renderPreview(static::getData($state, false)),
                 ...$additionalSchema,
                 ...static::editorSchema(static::getData($state)),
             ]);
@@ -116,14 +116,11 @@ abstract class Component extends LivewireComponent implements HasSchemas, HasAct
 
     public static function renderPreview(array $state): array
     {
-        if (!static::shouldPreview())
-            return [];
-
         return [
-            \Filament\Schemas\Components\Fieldset::make('Preview')
+            Group::make(static::renderView($state, false))
+                ->extraAttributes(['class' => 'documentation'])
                 ->columns(1)
                 ->columnSpanFull()
-                ->schema(static::renderView(static::getData($state, false)))
         ];
     }
 
@@ -132,10 +129,10 @@ abstract class Component extends LivewireComponent implements HasSchemas, HasAct
         $data = static::getData($state, $isState);
 
         return [
-                Group::make(static::getRenderSchema($data))
-                    ->columns($data['columns'] ?? 1)
-                    ->columnSpan($data['span'] ?? 'full')
-                    ->grow($data['grow'] ?? true)
+            Group::make(static::getRenderSchema($data))
+                ->columns($data['columns'] ?? 1)
+                ->columnSpan($data['span'] ?? 'full')
+                ->grow($data['grow'] ?? true)
         ];
     }
 

@@ -1,0 +1,369 @@
+.ping .fi-icon {
+    @apply animate-ping;
+}
+
+.pulse .fi-icon {
+    @apply animate-pulse;
+}
+
+
+.featured .fi-badge-label-ctn {
+    @apply animate-gradient bg-[length:200%_100%] bg-linear-to-r from-primary-500 via-primary-800 dark:via-primary-50 to-primary-500 bg-clip-text text-transparent;
+}
+
+.topbar-search-input {
+    @apply w-full sm:w-[380px] text-slate-400 bg-slate-100/10 dark:bg-slate-800/10 border border-slate-800/10 hover:border-slate-700/20 inline-flex items-center justify-between leading-5 pl-3 pr-2 py-[7px] shadow-xs whitespace-nowrap ring-0 rounded-4xl font-normal text-sm;
+}
+
+.modal-search {
+    @apply border border-gray-300 p-3 border-slate-800/20 overflow-auto max-w-2xl w-full max-h-full rounded-xl shadow-lg bg-slate-50/70 dark:bg-slate-800/70;
+}
+
+.modal-search-input {
+    @apply text-sm w-full border-0 outline-none ring-0 focus:ring-transparent appearance-none py-3 pl-2 pr-4 bg-slate-900/2 placeholder:text-slate-800 dark:placeholder:text-slate-300 rounded-xl;
+}
+
+.modal-search-key-bind {
+    @apply cursor-pointer flex items-center justify-center h-5 w-5 font-medium text-sm text-slate-800 rounded-sm border shadow-xs px-5 mx-3 border-slate-800/10 dark:border-slate-700 dark:text-slate-500;
+}
+
+.modal-search-result-heading {
+    @apply text-slate-950 dark:text-slate-50 font-bold;
+}
+
+.modal-search-result-crumb {
+    @apply text-slate-500 dark:text-slate-300;
+}
+
+.modal-search-result-crumb-separator {
+    @apply text-slate-700 dark:text-slate-500;
+}
+
+.modal-search-result-empty-heading {
+    @apply text-sm text-slate-500 dark:text-slate-300;
+}
+
+.modal-search-result-empty-subheading {
+    @apply text-xs text-slate-500 dark:text-slate-400;
+}
+
+.modal-search-icon {
+    @apply w-4 h-4 fill-slate-800 dark:fill-slate-50 shrink-0 ml-4 mr-2;
+}
+
+.mermaid-field-container {
+    @apply border-black/10 dark:border-white/10 border-dashed border-1 rounded-md;
+}
+
+.documentation {
+    & {
+        @apply font-normal font-stretch-ultra-condensed subpixel-antialiased;
+    }
+
+    a:not([class]) u {
+        @apply no-underline;
+    }
+
+    a:not([class]) * {
+        @apply no-underline font-medium border-b-1 border-b-primary-500 dark:border-b-primary-400 transition-colors duration-300;
+    }
+
+    h1:not([class]) {
+        @apply text-4xl pt-7 pb-2 font-bold;
+    }
+
+    h2:not([class]) {
+        @apply text-3xl pt-6 pb-2 font-semibold;
+    }
+
+    h3:not([class]) {
+        @apply text-2xl pt-5 pb-2 font-semibold;
+    }
+
+    h4:not([class]) {
+        @apply text-xl pt-4 pb-2 font-semibold;
+    }
+
+    p:not([class]) {
+        @apply text-sm/7 text-gray-800 dark:text-gray-400 font-stretch-ultra-condensed subpixel-antialiased;
+    }
+
+    p:not([class]) + p:not([class]) {
+        @apply mt-4;
+    }
+
+    img {
+        @apply mx-auto my-16 select-none px-6 py-4 border border-slate-400 dark:border-slate-800 rounded-xl shadow dark:shadow-slate-900/80 shadow-2xl dark:shadow-lg bg-linear-to-tr from-primary-950/70 via-primary-950/95 to-primary-950;
+    }
+
+    ol {
+        list-style: auto !important;
+    }
+
+    ol:not([class]) {
+        list-style-type: decimal !important;
+        list-style-position: outside;
+
+        @apply my-3 pl-8 space-y-5 list-decimal;
+    }
+
+    ol:not([class]) > li {
+        @apply pl-3 text-base leading-8;
+    }
+
+    ol:not([class]) > li::marker,
+    ul:not([class]) > li::marker {
+        @apply text-gray-400 dark:text-gray-900;
+    }
+
+    ol:not([class]) > li > p:first-child {
+        @apply mt-0;
+    }
+
+    ol:not([class]) > li > *:last-child {
+        @apply mb-0;
+    }
+
+    ol:not([class]) ol:not([class]) {
+        @apply mt-4 pl-7 space-y-3 list-[lower-alpha];
+    }
+
+    ol:not([class]) ol:not([class]) ol:not([class]) {
+        @apply list-[lower-roman];
+    }
+
+    ul:not([class]) {
+        @apply my-3 pl-7 space-y-4 list-disc;
+    }
+
+    ul:not([class]) > li {
+        @apply pl-2 text-base leading-7;
+    }
+
+    ul:not([class]) > li > p:first-child {
+        @apply mt-0;
+    }
+
+    ul:not([class]) > li > *:last-child {
+        @apply mb-0;
+    }
+
+    ul:not([class]) ul:not([class]) {
+        @apply mt-3 pl-6 space-y-2 list-[circle];
+    }
+
+    ul:not([class]) ul:not([class]) ul:not([class]) {
+        @apply list-[square];
+    }
+
+    ul:not([class]) ol:not([class]) {
+        @apply mt-3 pl-6 list-[lower-alpha];
+    }
+
+    ol:not([class]) ul:not([class]) {
+        @apply mt-3 pl-6 list-[disc];
+    }
+
+    ol:not([class]) li p,
+    ol:not([class]) li,
+    ul:not([class]) li p,
+    ul:not([class]) li {
+        @apply mt-0 mb-0;
+    }
+
+    :not(pre) > code {
+        @apply bg-[#d2d7ed] border-1 border-[#c4c6cd] dark:bg-[#1e2339] dark:border-[#2e344f] text-gray-800 dark:text-gray-400 rounded-full px-2 py-0.5 text-xs font-bold;
+    }
+
+    pre:has(code) {
+        @apply w-auto bg-[#1d2132] text-gray-200 py-5 rounded-xl px-5 py-5 mt-4 font-mono;
+    }
+
+    table:not([class]) {
+        @apply my-6 w-full border-separate border-spacing-0 rounded-lg overflow-hidden border border-0 text-sm  rounded-xl shadow dark:shadow-slate-900/80 shadow-2xl dark:shadow-lg;
+    }
+
+    table:not([class]) th:last-child,
+    table:not([class]) td:last-child {
+        @apply border-r-0;
+    }
+
+    table:not([class]) tbody tr:last-child td {
+        @apply border-b-0;
+    }
+
+    table:not([class]) th {
+        @apply bg-black/90 dark:bg-black/10 border-primary-400/5;
+    }
+
+    table:not([class]) th,
+    table:not([class]) th td,
+    table:not([class]) th p,
+    table:not([class]) th td p {
+        @apply text-white dark:text-white/80 text-sm font-normal font-stretch-ultra-condensed subpixel-antialiased;
+    }
+
+    table:not([class]) th {
+        @apply border-r border-b border-primary-400/10 dark:border-primary-400/10 px-2 py-3;
+    }
+
+    table:not([class]) th p {
+        @apply p-0 m-0;
+    }
+
+    table:not([class]) tbody tr td p
+    {
+        @apply text-gray-700 dark:text-gray-300/80 font-stretch-ultra-condensed subpixel-antialiased px-2 py-1 m-0 my-1 text-sm font-normal leading-5;
+    }
+
+    table:not([class]) td {
+        @apply border-r border-b border-primary-400/10 dark:border-primary-400/10 px-1 py-2;
+    }
+
+    table:not([class]) {
+        @apply rounded-lg overflow-hidden;
+    }
+
+    table:not([class]) th:first-child {
+        @apply rounded-tl-lg;
+    }
+
+    table:not([class]) th:last-child {
+        @apply rounded-tr-lg;
+    }
+
+    table:not([class]) tbody tr:last-child td:first-child {
+        @apply rounded-bl-lg;
+    }
+
+    table:not([class]) tbody tr:last-child td:last-child {
+        @apply rounded-br-lg;
+    }
+
+    blockquote:not([class]) {
+        @apply my-6 border-l-4 border-gray-500 bg-gray-300 py-2 pl-4 pr-3 italic text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300;
+    }
+
+    blockquote:not([class]) > :first-child {
+        @apply mt-0;
+    }
+
+    blockquote:not([class]) > :last-child {
+        @apply mb-0;
+    }
+
+    blockquote:not([class]) p {
+        @apply my-2;
+    }
+
+    blockquote:not([class]) cite {
+        @apply mt-3 block not-italic text-sm text-gray-500 dark:text-gray-400;
+    }
+
+    blockquote:not([class]) cite::before {
+        content: "— ";
+    }
+
+    hr {
+        @apply my-12 mx-2 border-gray-200 dark:border-gray-400/4;
+    }
+
+    .pagination-button {
+        @apply  flex max-w-md w-full items-center gap-5 rounded-2xl border border-gray-300 dark:border-gray-800 p-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg;
+    }
+
+    .pagination-previous-button {
+        @apply mr-auto text-left;
+    }
+
+    .pagination-next-button {
+        @apply ml-auto items-center justify-end text-right;
+    }
+
+    .pagination-category {
+        @apply text-xs font-medium uppercase tracking-[0.15em] text-primary-500;
+    }
+
+    .pagination-title {
+        @apply mt-0 text-sm font-medium;
+    }
+
+    .fi-section-header-heading {
+        @apply select-none;
+    }
+
+    .fi-page-header-main-ctn {
+        row-gap: 0.5rem;
+    }
+
+    .fi-header {
+        @apply mt-10;
+    }
+
+    .fi-header-heading {
+        @apply select-none;
+    }
+
+    .fi-section-content-ctn,
+    .fi-section-footer {
+        @apply border-0 py-3;
+    }
+
+    .rating-system-block {
+        @apply text-gray-500 my-10 py-5 dark:text-gray-500 px-10 flex items-center justify-between w-full rounded-lg;
+    }
+
+    .fi-section, .fi-callout {
+        @apply my-3;
+    }
+
+    .fi-section {
+        @apply px-3;
+    }
+
+    .fi-sc-component {
+        @apply !my-0 !py-0;
+    }
+
+    .fi-sc.fi-sc-has-gap {
+        @apply !my-0;
+    }
+
+    .fi-callout-heading {
+        @apply font-bold;
+    }
+}
+
+.fi-sc-tabs,
+.fi-sc-tabs-tab,
+.fi-sc-tabs.fi-contained,
+.fi-sc-tabs.fi-contained:where(.dark,.dark *) {
+    @apply !bg-transparent !border-none !ring-0 !outline-0 !shadow-none !p-0 !pt-3;
+}
+
+.fi-tabs,
+.fi-tabs:not(.fi-contained),
+.fi-tabs:not(.fi-contained):where(.dark,.dark *),
+.fi-tabs.fi-contained:where(.dark,.dark *),
+.fi-tabs.fi-vertical.fi-contained {
+    @apply !bg-transparent !border-none;
+}
+
+.fi-sc-tabs.fi-contained .fi-sc-tabs-tab.fi-active {
+    @apply !p-0 !pt-3;
+}
+
+.fi-header .fi-header-heading-subheading {
+    @apply !text-xl font-semibold;
+}
+
+.fi-header:has(.fi-header-heading-subheading)::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    inset-inline-start: 0;
+    width: 2rem;
+    height: 2px;
+    border-radius: 9999px;
+    background-color: var(--primary-500);
+}
