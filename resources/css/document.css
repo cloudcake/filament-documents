@@ -1,6 +1,7 @@
 @import '../../vendor/filament/filament/resources/css/theme.css' source(none);
 
 @import './components/mixed.css' layer(components) source(none);
+@import './components/code.css' layer(components) source(none);
 
 @source '../../src/Livewire/**/*';
 @source '../../**/*';
@@ -18,4 +19,8 @@
             background-position: 600% 50%;
         }
     }
+}
+
+@utility text-primary-gradient {
+    @apply animate-gradient bg-[length:200%_100%] bg-linear-to-r from-primary-500 via-primary-800 dark:via-primary-50 to-primary-500 bg-clip-text text-transparent;
 }

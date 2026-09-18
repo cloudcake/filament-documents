@@ -7,6 +7,7 @@ use Filament\Forms\Components\Builder;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Flex;
 use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Schemas\Components\Wizard\Step;
@@ -38,10 +39,10 @@ class Wizard extends Component
                 ->addActionAlignment(Alignment::Left)
                 ->addActionLabel('Add Step')
                 ->collapsible()
-                ->collapsed(fn($operation) => $operation === 'edit')
                 ->collapseAllAction(fn($action) => $action->visible(false))
                 ->expandAllAction(fn($action) => $action->visible(false))
                 ->addBetweenAction(fn($action) => $action->visible(false))
+    ->cloneable()
                 ->itemLabel(fn($state) => $state['title'] ?? 'New Tab')
                 ->schema([
                     Flex::make([
@@ -59,7 +60,7 @@ class Wizard extends Component
                         ->addActionAlignment(Alignment::Right)
                         ->addActionLabel('Add Content')
                         ->collapsible()
-                        ->collapsed(fn($operation) => $operation === 'edit')
+                        ->collapsed()
                         ->collapseAllAction(fn($action) => $action->visible(false))
                         ->expandAllAction(fn($action) => $action->visible(false))
                         ->addBetweenAction(fn($action) => $action->visible(false))
@@ -75,6 +76,11 @@ class Wizard extends Component
                 fn($step) => Step::make($step['title'])
                     ->description($step['description'] ?? null)
                     ->icon($step['icon'])
+                    ->afterValidation(function($data) {
+                        Notification::make('test')
+                            ->body(json_encode($data))
+                            ->send();
+                    })
                     ->schema(collect($step['content'] ?? [])
                         ->flatMap(function ($data) {
                             $class = $data['type'] ?? null;
@@ -89,7 +95,7 @@ class Wizard extends Component
             ->toArray();
 
         return [
-            \Filament\Schemas\Components\Wizard::make($steps)
+            \Filament\Schemas\Components\Wizard::make($steps),
         ];
     }
 }

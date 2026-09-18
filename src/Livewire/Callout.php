@@ -3,6 +3,8 @@
 namespace Cloudcake\Documents\Livewire;
 
 use Cloudcake\Components\Forms\Components\IconPicker;
+use Cloudcake\Documents\Enums\SafeColours;
+use Filament\Actions\Action;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -18,17 +20,20 @@ class Callout extends Component
         return [
             Flex::make([
                 IconPicker::make('icon')
+                    ->inlineLabel()
                     ->grow(false)
                     ->live(),
 
                 TextInput::make('heading')
+                    ->inlineLabel()
                     ->live()
                     ->required(),
 
                 Select::make('colour')
+                    ->inlineLabel()
                     ->live()
                     ->required()
-                    ->options(collect(Color::all())->flatMap(fn($v, $k) => [$k => str($k)->ucfirst()])->sort())
+                    ->options(SafeColours::class)
                     ->searchable()
                     ->grow(false),
             ])->columns(3),
@@ -47,21 +52,22 @@ class Callout extends Component
         $colour = $state['colour'] ?? null;
         $icon = $state['icon'] ?? null;
 
-        if ($colour) {
-            $colour = Color::all()[$colour] ?? Color::Neutral;
-        } else
-            $colour = Color::Neutral;
+        if ($description) {
+            $html = new HtmlString(RichEditor\RichContentRenderer::make($description)->toHtml());
 
-        if ($description)
-            $description = new HtmlString(RichEditor\RichContentRenderer::make($description)->toHtml());
+            // Callout doesn't support paragraphs since the wrapper in the callout description is already a paragraph.
+            $description = str($html)->remove('<p>')->remove('</p>')->toHtmlString();
+        }
 
         return [
             \Filament\Schemas\Components\Callout::make()
                 ->heading($heading)
                 ->description($description)
                 ->color($colour)
+                ->actions([
+                    Action::make('test')->link()->icon('tabler-notification'),
+                ])
                 ->icon($icon)
-                ->iconColor($colour)
                 ->dehydrated(false),
         ];
     }

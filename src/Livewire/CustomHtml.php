@@ -8,6 +8,7 @@ use Filament\Forms\Components\Select;
 use Filament\Infolists\Components\CodeEntry;
 use Filament\Schemas\Components\Flex;
 use Filament\Schemas\Components\Html;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
 use Phiki\Grammar\Grammar;
 use Stringable;
@@ -42,8 +43,7 @@ class CustomHtml extends Component
     protected static function getRenderSchema(array|null $state): array
     {
         return [
-            Html::make($state['content'] ?? '')
-                ->columnSpanFull()
+            Html::make(fn($get) => Blade::render($state['content'] ?? '', ['data' => json_encode($get('.'))]))->columnSpanFull()
         ];
     }
 }

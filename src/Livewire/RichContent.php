@@ -2,10 +2,10 @@
 
 namespace Cloudcake\Documents\Livewire;
 
+use Cloudcake\Documents\Blocks\HeroBlock;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\RichEditor\RichContentRenderer;
 use Filament\Schemas\Components\Html;
-use Illuminate\Support\HtmlString;
 use Stringable;
 
 class RichContent extends Component

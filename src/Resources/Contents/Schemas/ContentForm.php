@@ -66,8 +66,7 @@ class ContentForm
                             ->components([
                                 TextInput::make('title')
                                     ->required()
-                                    ->inlineLabel()
-                                    ->live(onBlur: true),
+                                    ->inlineLabel(),
 
                                 Builder::make('schema')
                                     ->hiddenLabel()

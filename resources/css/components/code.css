@@ -1,0 +1,21 @@
+.code-merge {
+    * {
+        @apply !outline-0 !ring-0;
+    }
+
+    .fi-grid {
+        gap: 0 !important;
+    }
+
+    .code-merge-head pre {
+        @apply rounded-b-none;
+    }
+
+    .fi-fo-code-editor.fi-input-wrp {
+        @apply rounded-t-none rounded-bl-none;
+    }
+
+    .code-merge-foot pre {
+        @apply rounded-t-none;
+    }
+}

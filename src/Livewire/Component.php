@@ -6,6 +6,7 @@ use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Components\Builder\Block;
 use Filament\Schemas\Components\Group;
+use Filament\Schemas\Components\Livewire;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Schemas\Schema;
@@ -25,6 +26,7 @@ abstract class Component extends LivewireComponent implements HasSchemas, HasAct
     public array $data = [];
 
     public const array BLOCKS_CLASSES = [
+        Action::class,
         Button::class,
         Callout::class,
         Code::class,

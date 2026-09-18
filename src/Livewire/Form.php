@@ -118,8 +118,9 @@ class Form extends Component
             $schema[] = match ($field['type'] ?? null) {
                 'input' => TextInput::make($stateName)
                     ->placeholder("Enter $label")
-                    ->belowContent([
-                        Text::make(str("<code>$stateName</code>")->toHtmlString())
+                    ->afterLabel([
+                        Text::make(str("$stateName")->toHtmlString())
+                            ->fontFamily('mono')
                             ->icon('tabler-variable')
                             ->tooltip("This form field stores its value as a variable named $stateName.")
                             ->color('primary')
@@ -139,6 +140,7 @@ class Form extends Component
                     ->revealable($field['data']['type'] === 'password')
                     ->label($label)
                     ->columnSpan($columnSpan)
+                    ->required()
                     ->inlineLabel($field['data']['inline'] ?? false),
 
                 'text' => Text::make(str($field['data']['text'])->toHtmlString())
@@ -167,11 +169,9 @@ class Form extends Component
             ];
 
         return [
-            Section::make($state['name'] ?? null)
-                ->columns($state['columns'] ?? 1)
-                ->icon($state['icon'] ?? null)
+            Group::make($schema)
+                ->columns(1)
                 ->columnSpanFull()
-                ->schema($schema)
         ];
     }
 }

@@ -15,6 +15,7 @@ use Cloudcake\Documents\Resources\Categories\CategoryResource;
 use Cloudcake\Documents\Resources\Components\ComponentResource;
 use Cloudcake\Documents\Resources\Contents\ContentResource;
 use Exception;
+use Filament\Actions\Action;
 use Filament\Contracts\Plugin;
 use Filament\Infolists\Components\CodeEntry;
 use Filament\Navigation\NavigationBuilder;
@@ -104,6 +105,7 @@ class Document implements Plugin
 
     public function boot(Panel $panel): void
     {
+
         $panel
             ->when(
                 fn() => $this->adminFor && $panel->getId() == $this->adminFor,
@@ -297,7 +299,6 @@ class Document implements Plugin
             ->extraAttributes(['class' => $model->featured ? 'featured' : ''])
             ->badge(fn($badge) => $model->featured ? 'Featured' : null)
             ->isActiveWhen(fn() => request()->route()->parameter('slug1') === $model->slug);
-
 
         if (!$nested && $model->relationLoaded('children')) {
             $childItems = [];
