@@ -61,15 +61,6 @@ class Document implements Plugin
             ->assets([
                 Css::make('cloudcake-documents-css', __DIR__ . '/../resources/dist/css/document.css'),
             ])
-            ->maxContentWidth(fn() => Models\Document::current($panel->getId())->setting(DocumentLayoutSetting::MaxContentWidth))
-            ->colors(function () use ($panel) {
-                $primaryColour = Models\Document::current($panel->getId())->setting(DocumentLayoutSetting::PrimaryColour);
-
-                if ($primaryColour)
-                    return ['primary' => $primaryColour];
-
-                return null;
-            })
             ->when(
                 fn() => $this->adminFor,
                 fn(Panel $panel) => $panel
@@ -89,6 +80,16 @@ class Document implements Plugin
                     $panel->login()->pages([
                         ViewDocument::class,
                     ]);
+
+                    $panel->maxContentWidth(fn() => Models\Document::current($panel->getId())->setting(DocumentLayoutSetting::MaxContentWidth))
+                        ->colors(function () use ($panel) {
+                            $primaryColour = Models\Document::current($panel->getId())->setting(DocumentLayoutSetting::PrimaryColour);
+
+                            if ($primaryColour)
+                                return ['primary' => $primaryColour];
+
+                            return null;
+                        });
 
                     if (app()->runningInConsole())
                         return;
