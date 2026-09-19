@@ -6,6 +6,7 @@ use Cloudcake\Components\Forms\Components\IconPicker;
 use Cloudcake\Documents\Enums\DocumentAccessAuthRequirementSetting;
 use Cloudcake\Documents\Enums\DocumentAccessSetting;
 use Cloudcake\Documents\Enums\DocumentAuthorshipSetting;
+use Cloudcake\Documents\Enums\DocumentLayoutSetting;
 use Cloudcake\Documents\Enums\DocumentRatingSystemSetting;
 use Cloudcake\Documents\Enums\DocumentMetaSetting;
 use Cloudcake\Documents\Models\Category;
@@ -19,6 +20,7 @@ use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
@@ -426,6 +428,19 @@ class Settings extends Page implements HasSchemas, HasActions
 
                                 return $state;
                             }),
+                    ]),
+
+                Section::make('Layout')
+                    ->icon('tabler-ballpen')
+                    ->iconColor('gray')
+                    ->description(new HtmlString("Choose whether writer and editor names are shown within documents, giving you control over how contributor information is presented."))
+                    ->aside()
+                    ->components([
+                        Select::make(DocumentLayoutSetting::MaxContentWidth->statePath())
+                            ->options(Width::class)
+                            ->default(fn() => filament()->getCurrentPanel()->getMaxContentWidth()),
+
+                        ColorPicker::make(DocumentLayoutSetting::PrimaryColour->statePath()),
                     ]),
 
                 Section::make('Control document authorship display')

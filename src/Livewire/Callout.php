@@ -64,9 +64,9 @@ class Callout extends Component
                 ->heading($heading)
                 ->description($description)
                 ->color($colour)
-                ->actions([
-                    Action::make('test')->link()->icon('tabler-notification'),
-                ])
+//                ->actions([
+//                    Action::make('test')->link()->icon('tabler-notification'),
+//                ])
                 ->icon($icon)
                 ->dehydrated(false),
         ];

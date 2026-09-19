@@ -28,8 +28,6 @@ class ViewDocument extends Page implements HasSchemas, HasActions
 
     protected string $view = 'cloudcake-documents::layouts.document';
 
-    protected Width|string|null $maxContentWidth = Width::FiveExtraLarge;
-
     public Content|null $record = null;
 
     public Document|null $document = null;

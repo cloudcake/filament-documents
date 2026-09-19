@@ -5,8 +5,11 @@ namespace Cloudcake\Documents\Livewire;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Components\Builder\Block;
+use Filament\Forms\Components\Hidden;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Livewire;
+use Filament\Schemas\Components\Text;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Schemas\Schema;
@@ -85,7 +88,7 @@ abstract class Component extends LivewireComponent implements HasSchemas, HasAct
         return collect($state)->firstWhere('type', static::class)['data'] ?? [];
     }
 
-    private static function label(array|null $state = []): string|HtmlString
+    public static function label(array|null $state = []): string|HtmlString
     {
         $displayLabel = static::getLabel($state);
         $componentLabel = str(basename(static::class))
@@ -117,6 +120,12 @@ abstract class Component extends LivewireComponent implements HasSchemas, HasAct
             ]);
     }
 
+    public static function blocks(array $additionalSchema = []): array
+    {
+        return collect(static::BLOCKS_CLASSES)
+            ->map(fn($class) => $class::block($additionalSchema))->toArray();
+    }
+
     public static function renderPreview(array $state): array
     {
         return [
@@ -139,16 +148,10 @@ abstract class Component extends LivewireComponent implements HasSchemas, HasAct
         ];
     }
 
-    public static function editorSchema(array|null $state = null): array
+    public static function editorSchema(array|null $state = null, bool $isState = true): array
     {
         return [
-            ...static::getEditorSchema(static::getData($state))
+            ...static::getEditorSchema(static::getData($state, $isState))
         ];
-    }
-
-    public static function blocks(array $additionalSchema = []): array
-    {
-        return collect(static::BLOCKS_CLASSES)
-            ->map(fn($class) => $class::block($additionalSchema))->toArray();
     }
 }

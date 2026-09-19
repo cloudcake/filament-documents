@@ -104,7 +104,17 @@ class ContentForm
 
                                         Action::make('preview')
                                             ->modal()
-                                            ->modalWidth(Width::FiveExtraLarge)
+                                            ->modalWidth(Width::FitContent)
+                                            ->modalHeading(function(array $arguments, array $data, Builder $component) {
+                                                $itemSchema = $component->getState()[$arguments['item']];
+
+                                                /** @var class-string<\Cloudcake\Documents\Livewire\Component> $class */
+                                                $class = $itemSchema['type'];
+
+                                                return str($class::label($itemSchema['data'] ?? []))->prepend('Preview · ')->toHtmlString();
+                                            })
+                                            ->modalIcon('tabler-eye')
+                                            ->modalDescription(str("Please note that there may be variations in styling on the final<br>content view as it depends what theme properties have been configured.")->toHtmlString())
                                             ->tooltip('Preview')
                                             ->modalSubmitAction(false)
                                             ->modalCancelActionLabel('Dismiss')
@@ -119,7 +129,7 @@ class ContentForm
                                                     return $class::renderPreview($itemSchema['data'] ?? []);
 
                                                 return [];
-                                            })
+                                            }),
                                     ])
                                     ->blocks(\Cloudcake\Documents\Livewire\Component::blocks()),
                             ]),
@@ -368,8 +378,7 @@ class ContentForm
         if ($component instanceof Builder) {
             $itemSchema = $component->getState()[$arguments['item']];
             $itemType = $itemSchema['type'];
-        }
-        else {
+        } else {
             $itemSchema = $component->getState();
             $itemType = 'layout';
         }

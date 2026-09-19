@@ -2,6 +2,7 @@
 
 namespace Cloudcake\Documents;
 
+use Cloudcake\Documents\Enums\DocumentLayoutSetting;
 use Cloudcake\Documents\Enums\GateCheckType;
 use Cloudcake\Documents\Enums\GateFilter;
 use Cloudcake\Documents\Enums\GateRequirement;
@@ -23,6 +24,7 @@ use Filament\Navigation\NavigationGroup;
 use Filament\Navigation\NavigationItem;
 use Filament\Panel;
 use Filament\Support\Assets\Css;
+use Filament\Support\Colors\Color;
 use Filament\View\PanelsRenderHook;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Blade;
@@ -59,13 +61,18 @@ class Document implements Plugin
             ->assets([
                 Css::make('cloudcake-documents-css', __DIR__ . '/../resources/dist/css/document.css'),
             ])
+            ->maxContentWidth(fn() => Models\Document::current($panel->getId())->setting(DocumentLayoutSetting::MaxContentWidth))
+            ->colors(function () use ($panel) {
+                $primaryColour = Models\Document::current($panel->getId())->setting(DocumentLayoutSetting::PrimaryColour);
+
+                if ($primaryColour)
+                    return ['primary' => $primaryColour];
+
+                return null;
+            })
             ->when(
                 fn() => $this->adminFor,
                 fn(Panel $panel) => $panel
-                    ->bootUsing(function () {
-                        if (!filament()->getPanel($this->adminFor))
-                            throw new Exception("The documentation view panel has not been setup correctly. A panel named '$this->adminFor' does not exist. Please follow the installation instructions before using the admin panel.");
-                    })
                     ->pages([
                         Documentation::class,
                         Settings::class,
@@ -105,7 +112,6 @@ class Document implements Plugin
 
     public function boot(Panel $panel): void
     {
-
         $panel
             ->when(
                 fn() => $this->adminFor && $panel->getId() == $this->adminFor,
