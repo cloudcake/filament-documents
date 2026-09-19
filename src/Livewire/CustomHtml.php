@@ -2,15 +2,11 @@
 
 namespace Cloudcake\Documents\Livewire;
 
+use Cloudcake\Documents\Components\Component;
 use Filament\Forms\Components\CodeEditor;
 use Filament\Forms\Components\CodeEditor\Enums\Language;
-use Filament\Forms\Components\Select;
-use Filament\Infolists\Components\CodeEntry;
-use Filament\Schemas\Components\Flex;
 use Filament\Schemas\Components\Html;
 use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\HtmlString;
-use Phiki\Grammar\Grammar;
 use Stringable;
 
 class CustomHtml extends Component

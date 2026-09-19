@@ -3,6 +3,7 @@
 namespace Cloudcake\Documents\Livewire;
 
 use Cloudcake\Documents\Blocks\HeroBlock;
+use Cloudcake\Documents\Components\Component;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\RichEditor\RichContentRenderer;
 use Filament\Schemas\Components\Html;
@@ -13,7 +14,7 @@ class RichContent extends Component
     protected static function getLabel(array|null $state = []): string|null
     {
         if ($state['raw'] ?? false) {
-            return str(RichContentRenderer::make($state['raw'])->toText())->before(PHP_EOL)->limit(32, preserveWords: true);
+            return str(RichContentRenderer::make($state['raw'])->toText())->limit(24, preserveWords: true);
         }
 
         return null;

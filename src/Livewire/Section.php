@@ -3,16 +3,13 @@
 namespace Cloudcake\Documents\Livewire;
 
 use Cloudcake\Components\Forms\Components\IconPicker;
+use Cloudcake\Documents\Components\Component;
 use Filament\Forms\Components\Builder;
-use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Flex;
-use Filament\Schemas\Components\Tabs\Tab;
-use Filament\Schemas\Components\Wizard\Step;
 use Filament\Support\Enums\Alignment;
-use Illuminate\Support\HtmlString;
 use Stringable;
 
 class Section extends Component

@@ -2,6 +2,7 @@
 
 namespace Cloudcake\Documents\Livewire;
 
+use Cloudcake\Documents\Components\Component;
 use Cloudcake\Documents\Document;
 use Cloudcake\Documents\Enums\HttpHost;
 use Cloudcake\Documents\Enums\HttpMethod;
@@ -22,8 +23,10 @@ use Filament\Schemas\Components\Text;
 use Filament\Support\Enums\FontWeight;
 use GuzzleHttp\Exception\ConnectException;
 use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\HtmlString;
+use Phiki\Grammar\Grammar;
 use Stringable;
 
 class HttpRequest extends Component
@@ -34,6 +37,11 @@ class HttpRequest extends Component
             return "{$state['method']} {$state['endpoint']}";
 
         return null;
+    }
+
+    protected static function formalLabel(): string
+    {
+        return 'HTTP Request';
     }
 
     protected static function getIcon(array|null $state = []): string|Stringable|null
@@ -343,12 +351,12 @@ class HttpRequest extends Component
                                 ->grammar(fn($get) => match ($get('response_content_type')) {
                                     'application/xml',
                                     'text/xml',
-                                    'xml' => \Phiki\Grammar\Grammar::Xml,
+                                    'xml' => Grammar::Xml,
                                     'application/html',
                                     'text/html',
                                     'html',
-                                    'text/plain' => \Phiki\Grammar\Grammar::Html,
-                                    default => \Phiki\Grammar\Grammar::Json
+                                    'text/plain' => Grammar::Html,
+                                    default => Grammar::Json
                                 }),
                         ])
                 ])
@@ -410,7 +418,7 @@ class HttpRequest extends Component
                             $timeout = 20;
 
                             try {
-                                /** @var \Illuminate\Http\Client\Response $response */
+                                /** @var Response $response */
                                 $response = Http::withHeaders($headers)
                                     ->withUserAgent("Cloudcake HTTP")
                                     ->timeout($timeout)
@@ -433,7 +441,7 @@ class HttpRequest extends Component
                                 $set('response_code', 'Unknown');
                                 $set('response_body', $e->getMessage());
                                 $set('response_valid', false);
-                            } catch (Exception $e) {
+                            } catch (Exception) {
                                 $set('response_content_type', 'text/plain');
                                 $set('response_code', 'Unknown');
                                 $set('response_body', "Request encountered an error.");

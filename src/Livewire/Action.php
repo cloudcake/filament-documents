@@ -3,6 +3,7 @@
 namespace Cloudcake\Documents\Livewire;
 
 use Cloudcake\Components\Forms\Components\IconPicker;
+use Cloudcake\Documents\Components\Component;
 use Filament\Actions\Action as FilamentAction;
 use Filament\Forms\Components\CodeEditor;
 use Filament\Forms\Components\Select;

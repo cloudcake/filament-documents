@@ -3,13 +3,12 @@
 namespace Cloudcake\Documents\Livewire;
 
 use Cloudcake\Components\Forms\Components\IconPicker;
+use Cloudcake\Documents\Components\Component;
 use Cloudcake\Documents\Enums\SafeColours;
-use Filament\Actions\Action;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Flex;
-use Filament\Support\Colors\Color;
 use Illuminate\Support\HtmlString;
 use Stringable;
 

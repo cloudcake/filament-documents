@@ -2,18 +2,12 @@
 
 namespace Cloudcake\Documents\Livewire;
 
-use Cloudcake\Components\Forms\Components\IconPicker;
-use Filament\Forms\Components\Builder;
+use Cloudcake\Documents\Components\Component;
 use Filament\Forms\Components\Checkbox;
-use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Flex;
-use Filament\Schemas\Components\Grid;
-use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Support\Enums\Alignment;
-use Illuminate\Support\HtmlString;
 use Stringable;
 
 class Layout extends Component
@@ -55,18 +49,8 @@ class Layout extends Component
                     ->required(),
             ]),
 
-            Builder::make('content')
-                ->blockPreviews(areInteractive: true)
-                ->blockNumbers(false)
-                ->blockIcons()
-                ->columnSpanFull()
-                ->cloneable()
+            static::BaseBuilder('content')
                 ->addActionAlignment(Alignment::Right)
-                ->addActionLabel('Add Content')
-                ->collapsible()
-                ->collapseAllAction(fn($action) => $action->visible(false))
-                ->expandAllAction(fn($action) => $action->visible(false))
-                ->addBetweenAction(fn($action) => $action->visible(false))
                 ->blocks(function ($get) {
                     $extraSchema = [];
                     $type = $get('type') ?? 'flex';
@@ -74,7 +58,6 @@ class Layout extends Component
                     if ($type === 'grid')
                         $extraSchema[] =
                             TextInput::make('span')
-
                                 ->integer()
                                 ->minValue(1)
                                 ->maxValue(fn() => $get('columns'))
@@ -98,14 +81,9 @@ class Layout extends Component
 
         $type = $state['type'] ?? 'grid';
         $content = collect($state['content'] ?? [])
-            ->flatMap(function ($data) {
-                $class = $data['type'] ?? null;
-
-                if (class_exists($class))
-                    return $class::renderView($data['data'], false);
-
-                return null;
-            })->filter()->all();
+            ->flatMap(fn ($data) => Component::getSchemaFromData($data))
+            ->filter()
+            ->all();
 
         if ($type === 'grid')
             $schema = $content;

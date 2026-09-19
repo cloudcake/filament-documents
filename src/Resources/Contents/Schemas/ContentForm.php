@@ -3,23 +3,14 @@
 namespace Cloudcake\Documents\Resources\Contents\Schemas;
 
 use Cloudcake\Components\Forms\Components\IconPicker;
+use Cloudcake\Documents\Components\Component;
 use Cloudcake\Documents\Document;
 use Cloudcake\Documents\Enums\GateFilter;
 use Cloudcake\Documents\Enums\GateRequirement;
-use Cloudcake\Documents\Livewire\Callout;
-use Cloudcake\Documents\Livewire\Code;
-use Cloudcake\Documents\Livewire\Form;
-use Cloudcake\Documents\Livewire\HttpRequest;
-use Cloudcake\Documents\Livewire\Graph;
-use Cloudcake\Documents\Livewire\PromotedComponent;
-use Cloudcake\Documents\Livewire\RichContent;
-use Cloudcake\Documents\Livewire\Tabs;
 use Cloudcake\Documents\Models\Category;
-use Cloudcake\Documents\Models\Component;
 use Cloudcake\Documents\Models\Content;
 use Cloudcake\Documents\Resources\Categories\Schemas\CategoryForm;
 use Filament\Actions\Action;
-use Filament\Forms\Components\Builder;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Repeater;
@@ -37,7 +28,6 @@ use Filament\Support\Enums\Size;
 use Filament\Support\Enums\Width;
 use Illuminate\Support\HtmlString;
 use Illuminate\Validation\Rules\Unique;
-use JetBrains\PhpStorm\NoReturn;
 
 class ContentForm
 {
@@ -54,85 +44,31 @@ class ContentForm
                             ->headerActions([
                                 Action::make('convert_to_component')
                                     ->color('gray')
+                                    ->color('gray')
                                     ->iconButton()
                                     ->tooltip('Convert to Component')
                                     ->icon('tabler-star')
                                     ->modalWidth(Width::Small)
-                                    ->schema(fn(array $arguments, Section $component) => static::promotionSchema($arguments, $component))
-                                    ->action(fn(array $arguments, array $data, Section $component) => static::promote($arguments, $data, $component))
+                                    ->schema(fn(array $arguments, Section $component) => Component::promotionSchema($arguments, $component))
+                                    ->action(fn(array $arguments, array $data, Section $component) => Component::promote($arguments, $data, $component))
                                     ->modalDescription(new HtmlString("This action will convert the page into a reusable component and replace all content with the component reference.<br><br>Are you sure you want to do this?"))
-                                    ->requiresConfirmation()
+                                    ->requiresConfirmation(),
+
+                                Action::make('fullscreen_edit')
+                                    ->color('gray')
+                                    ->color('gray')
+                                    ->iconButton()
+                                    ->tooltip('Edit in fullscreen')
+                                    ->icon('tabler-screen-share')
+                                    ->modalWidth(Width::Small)
                             ])
                             ->components([
                                 TextInput::make('title')
                                     ->required()
                                     ->inlineLabel(),
 
-                                Builder::make('schema')
-                                    ->hiddenLabel()
-                                    ->blockNumbers(false)
-                                    ->blockIcons()
-                                    ->columnSpanFull()
-                                    ->addActionAlignment(Alignment::Left)
-                                    ->addActionLabel('Add Content')
-                                    ->collapsible()
-                                    ->cloneable()
-                                    ->collapsed(fn($operation) => $operation === 'edit')
-                                    ->collapseAllAction(fn($action) => $action->visible(false))
-                                    ->expandAllAction(fn($action) => $action->visible(false))
-                                    ->addBetweenAction(fn($action) => $action->visible(false))
-                                    ->extraItemActions([
-                                        Action::make('promote_to_component')
-                                            ->tooltip("Promote to Reusable Component")
-                                            ->icon('tabler-star')
-                                            ->visible(function (array $arguments, Builder $component) {
-                                                $itemSchema = $component->getState()[$arguments['item']];
-
-                                                if (!$itemSchema)
-                                                    return false;
-
-                                                if ($itemSchema['type'] === PromotedComponent::class)
-                                                    return false;
-
-                                                return true;
-                                            })
-                                            ->modal()
-                                            ->modalWidth(Width::Medium)
-                                            ->schema(fn(array $arguments, Builder $component) => static::promotionSchema($arguments, $component))
-                                            ->modalSubmitActionLabel('Promote')
-                                            ->action(fn(array $arguments, array $data, Builder $component) => static::promote($arguments, $data, $component)),
-
-                                        Action::make('preview')
-                                            ->modal()
-                                            ->modalWidth(Width::FitContent)
-                                            ->modalHeading(function(array $arguments, array $data, Builder $component) {
-                                                $itemSchema = $component->getState()[$arguments['item']];
-
-                                                /** @var class-string<\Cloudcake\Documents\Livewire\Component> $class */
-                                                $class = $itemSchema['type'];
-
-                                                return str($class::label($itemSchema['data'] ?? []))->prepend('Preview · ')->toHtmlString();
-                                            })
-                                            ->modalIcon('tabler-eye')
-                                            ->modalDescription(str("Please note that there may be variations in styling on the final<br>content view as it depends what theme properties have been configured.")->toHtmlString())
-                                            ->tooltip('Preview')
-                                            ->modalSubmitAction(false)
-                                            ->modalCancelActionLabel('Dismiss')
-                                            ->icon('tabler-eye')
-                                            ->schema(function (array $arguments, array $data, Builder $component) {
-                                                $itemSchema = $component->getState()[$arguments['item']];
-
-                                                /** @var class-string<\Cloudcake\Documents\Livewire\Component> $class */
-                                                $class = $itemSchema['type'];
-
-                                                if (class_exists($class))
-                                                    return $class::renderPreview($itemSchema['data'] ?? []);
-
-                                                return [];
-                                            }),
-                                    ])
-                                    ->blocks(\Cloudcake\Documents\Livewire\Component::blocks()),
-                            ]),
+                                \Cloudcake\Documents\Components\Component::BaseBuilder(),
+                        ]),
 
                         Hidden::make('categoryPrivateHint')->dehydrated(false),
                         Hidden::make('categoryUnpublishedHint')->dehydrated(false),
@@ -346,52 +282,5 @@ class ContentForm
                             ]),
                     ]),
             ]);
-    }
-
-    #[NoReturn]
-    private static function promote(array $arguments, array $data, Builder|Section $component): void
-    {
-        $itemSchema = $component->getState()[$arguments['item']];
-
-        $model = new Component();
-        $model->name = $data['name'];
-        $model->schema = $itemSchema['data'];
-        $model->type = $itemSchema['type'];
-        $model->creator_id = auth()->id();
-        $model->creator_type = auth()->user()->getMorphClass();
-        $model->save();
-
-        $state = $component->getState();
-
-        $state[$arguments['item']] = [
-            'data' => [
-                'id' => $model->id,
-            ],
-            'type' => PromotedComponent::class,
-        ];
-
-        $component->state($state);
-    }
-
-    private static function promotionSchema(array $arguments, Builder|Section $component): array
-    {
-        if ($component instanceof Builder) {
-            $itemSchema = $component->getState()[$arguments['item']];
-            $itemType = $itemSchema['type'];
-        } else {
-            $itemSchema = $component->getState();
-            $itemType = 'layout';
-        }
-
-        return [
-            TextInput::make('name')
-                ->required(),
-
-            Text::make(str($itemType)
-                ->afterLast('\\')
-                ->kebab()
-                ->replace(['-', '_'], ' ')
-                ->apa())->badge()->color('primary')
-        ];
     }
 }

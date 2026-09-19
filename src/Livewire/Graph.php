@@ -5,11 +5,10 @@ namespace Cloudcake\Documents\Livewire;
 use Cloudcake\Components\Enums\MermaidTheme;
 use Cloudcake\Components\Forms\Components\MermaidInput;
 use Cloudcake\Components\Infolists\Components\MermaidEntry;
+use Cloudcake\Documents\Components\Component;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Flex;
-use Illuminate\Support\HtmlString;
 use Stringable;
 
 class Graph extends Component

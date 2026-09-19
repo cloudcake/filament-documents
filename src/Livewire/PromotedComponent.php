@@ -2,8 +2,8 @@
 
 namespace Cloudcake\Documents\Livewire;
 
+use Cloudcake\Documents\Components\Component;
 use Filament\Forms\Components\Select;
-use Illuminate\Support\HtmlString;
 use Stringable;
 
 class PromotedComponent extends Component
