@@ -54,8 +54,6 @@ abstract class Component extends LivewireComponent implements HasSchemas, HasAct
     public const array BLOCKS_CLASSES = [
         // Temporary:
         Heading::class,
-
-        // Keepers
         Action::class,
         Button::class,
         Callout::class,
@@ -64,7 +62,6 @@ abstract class Component extends LivewireComponent implements HasSchemas, HasAct
         CustomHtml::class,
         Fieldset::class,
         Form::class,
-        HeadingComponent::class,
         HttpRequest::class,
         Input::class,
         Layout::class,
@@ -75,6 +72,10 @@ abstract class Component extends LivewireComponent implements HasSchemas, HasAct
         Tabs::class,
         Text::class,
         Wizard::class,
+
+        // Keepers
+        ActionComponent::class,
+        HeadingComponent::class,
     ];
 
     public static function getSchemaFromData($data): array|null
@@ -227,6 +228,22 @@ abstract class Component extends LivewireComponent implements HasSchemas, HasAct
             ->expandAllAction(fn($action) => $action->visible(false))
             ->addBetweenAction(fn($action) => $action->visible(false))
             ->extraItemActions([
+                FilamentAction::make('change_type')
+                    ->icon('tabler-bank')
+                    ->requiresConfirmation()
+                    ->schema([
+                        Select::make('type')->options(collect(static::BLOCKS_CLASSES)->flatMap(fn($class) => [$class => $class]))
+                    ])
+                    ->action(function(array $arguments, array $data, Builder $component) {
+                        $itemSchema = $component->getState()[$arguments['item']];
+                        $itemSchema['type'] = $data['type'];
+
+                        $state = $component->getState();
+                        $state[$arguments['item']] = $itemSchema;
+
+                        $component->state($state);
+                    }),
+
                 FilamentAction::make('promote_to_component')
                     ->tooltip("Promote to Reusable Component")
                     ->icon('tabler-star')
