@@ -84,8 +84,6 @@ abstract class Component extends LivewireComponent implements HasSchemas, HasAct
         // @TODO: Remove this once refactoring is done
         if (!class_exists($class)) {
             $class = str(Component::class)->beforeLast('\\')->append($class . 'Component');
-
-            dd($class);
         }
 
         if (class_exists($class))
