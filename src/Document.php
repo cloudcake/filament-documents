@@ -81,7 +81,8 @@ class Document implements Plugin
                         ViewDocument::class,
                     ]);
 
-                    $panel->maxContentWidth(fn() => Models\Document::current($panel->getId())->setting(DocumentLayoutSetting::MaxContentWidth))
+                    $panel
+                        ->maxContentWidth(fn() => Models\Document::current($panel->getId())->setting(DocumentLayoutSetting::MaxContentWidth))
                         ->colors(function () use ($panel) {
                             $primaryColour = Models\Document::current($panel->getId())->setting(DocumentLayoutSetting::PrimaryColour);
 

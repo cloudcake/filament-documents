@@ -6,7 +6,6 @@
     @apply animate-pulse;
 }
 
-
 .featured .fi-badge-label-ctn,
 .featured {
     @apply text-primary-gradient;
@@ -264,30 +263,6 @@
         content: "— ";
     }
 
-    hr {
-        @apply my-12 mx-2 border-gray-200 dark:border-gray-400/4;
-    }
-
-    .pagination-button {
-        @apply flex max-w-md w-full items-center gap-5 rounded-2xl border border-gray-300 dark:border-gray-800 p-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg;
-    }
-
-    .pagination-previous-button {
-        @apply mr-auto text-left;
-    }
-
-    .pagination-next-button {
-        @apply ml-auto items-center justify-end text-right;
-    }
-
-    .pagination-category {
-        @apply text-xs font-medium uppercase tracking-[0.15em] text-primary-500;
-    }
-
-    .pagination-title {
-        @apply mt-0 text-sm font-medium;
-    }
-
     .fi-section-header-heading {
         @apply select-none;
     }
@@ -304,57 +279,29 @@
         @apply select-none;
     }
 
-    .fi-section-content-ctn,
-    .fi-section-footer {
-        @apply border-0 py-3;
-    }
-
     .rating-system-block {
         @apply text-gray-500 my-10 py-5 dark:text-gray-500 px-10 flex items-center justify-between w-full rounded-lg;
     }
-
-    .fi-section, .fi-callout {
-        @apply my-3;
-    }
-
-    .fi-section {
-        @apply px-3;
-    }
-
-    .fi-sc-component {
-        @apply !my-0 !py-0;
-    }
-
-    .fi-sc.fi-sc-has-gap {
-        @apply !my-0;
-    }
-
-    .fi-callout-heading {
-        @apply font-bold;
-    }
 }
 
-.fi-sc-tabs,
-.fi-sc-tabs-tab,
-.fi-sc-tabs.fi-contained,
-.fi-sc-tabs.fi-contained:where(.dark,.dark *) {
-    @apply !bg-transparent !border-none !ring-0 !outline-0 !shadow-none !p-0 !pt-3;
+.pagination-button {
+    @apply flex max-w-md w-full items-center gap-5 rounded-2xl border border-gray-300 dark:border-gray-800 p-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg;
 }
 
-.fi-tabs,
-.fi-tabs:not(.fi-contained),
-.fi-tabs:not(.fi-contained):where(.dark,.dark *),
-.fi-tabs.fi-contained:where(.dark,.dark *),
-.fi-tabs.fi-vertical.fi-contained {
-    @apply !bg-transparent !border-none;
+.pagination-previous-button {
+    @apply mr-auto text-left;
 }
 
-.fi-sc-tabs.fi-contained .fi-sc-tabs-tab.fi-active {
-    @apply !p-0 !pt-3;
+.pagination-next-button {
+    @apply ml-auto items-center justify-end text-right;
 }
 
-.fi-header .fi-header-heading-subheading {
-    @apply !text-xl font-semibold;
+.pagination-category {
+    @apply text-xs font-medium uppercase tracking-[0.15em] text-primary-500;
+}
+
+.pagination-title {
+    @apply mt-0 text-sm font-medium;
 }
 
 .fi-header:has(.fi-header-heading-subheading)::before {

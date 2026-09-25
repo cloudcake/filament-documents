@@ -47,6 +47,7 @@ class ActionComponent extends Component
                     ]),
 
                 Select::make('action_type')
+                    ->visible(fn($get) => $get('display_mode') === 'link' || $get('display_mode') === 'button')
                     ->required()
                     ->live()
                     ->options([
@@ -54,7 +55,7 @@ class ActionComponent extends Component
                         'external_url' => 'External URL',
                         'custom' => 'Custom',
                     ]),
-            ])->visible(fn($get) => $get('display_mode') === 'link' || $get('display_mode') === 'button'),
+            ]),
 
             TextInput::make('url')
                 ->label('URL')
@@ -144,154 +145,6 @@ class ActionComponent extends Component
 
     protected static function runAction(array $arguments, array $data, \Filament\Schemas\Components\Component $component, string $code): void
     {
-        $highRiskFunctions = [
-            // Process / shell execution
-            'exec',
-            'system',
-            'shell_exec',
-            'passthru',
-            'proc_open',
-            'popen',
-            'pcntl_exec',
-            'pcntl_fork',
-            'pcntl_signal',
-            'pcntl_alarm',
-            'proc_nice',
-            'proc_terminate',
-            'proc_get_status',
-            'proc_close',
-
-            // Code evaluation / dynamic inclusion
-            'eval',
-            'assert',
-            'create_function',
-            'preg_replace',          // especially dangerous with /e modifier
-            'include',
-            'include_once',
-            'require',
-            'require_once',
-            'call_user_func',
-            'call_user_func_array',
-            'forward_static_call',
-            'forward_static_call_array',
-            'extract',
-            'compact',
-            'parse_str',
-
-            // File system (write / delete / permission)
-            'file_put_contents',
-            'file_get_contents',
-            'fwrite',
-            'fputs',
-            'unlink',
-            'rmdir',
-            'mkdir',
-            'rename',
-            'copy',
-            'move_uploaded_file',
-            'chmod',
-            'chown',
-            'chgrp',
-            'touch',
-            'link',
-            'symlink',
-            'tempnam',
-            'tmpfile',
-            'fopen',
-            'fclose',
-            'glob',
-            'scandir',
-            'opendir',
-            'readdir',
-
-            // Network / sockets
-            'fsockopen',
-            'pfsockopen',
-            'stream_socket_client',
-            'stream_socket_server',
-            'curl_exec',
-            'curl_multi_exec',
-            'mail',
-            'mb_send_mail',
-
-            // Dangerous info / config
-            'phpinfo',
-            'ini_set',
-            'ini_alter',
-            'ini_restore',
-            'putenv',
-            'dl',
-            'getenv',
-            'apache_setenv',
-
-            // Serialization
-            'unserialize',
-            'serialize',
-
-            // Other high-risk
-            'header',
-            'setcookie',
-            'setrawcookie',
-            'error_reporting',
-            'register_shutdown_function',
-            'register_tick_function',
-
-            // Laravel-specific / framework helpers & facades
-            'dd',
-            'dump',
-            'ray',
-            'var_dump',
-            'print_r',
-            'var_export',
-
-            // Laravel facades / static calls (string form for simple blacklisting)
-            'DB::',
-            'DB::statement',
-            'DB::unprepared',
-            'DB::raw',
-            'Schema::',
-            'Artisan::',
-            'Artisan::call',
-            'Artisan::queue',
-            'Storage::',
-            'File::',
-            'Http::',
-            'Mail::',
-            'Notification::',
-            'Queue::',
-            'Cache::',
-            'Config::',
-            'Config::set',
-            'Env::',
-            'Log::',
-            'Process::',
-            'Route::',
-            'View::',
-            'Blade::',
-            'Event::',
-            'Gate::',
-            'Auth::',
-            'App::',
-
-            // Common Laravel class prefixes (for partial matching)
-            'Illuminate\\Support\\Facades\\DB',
-            'Illuminate\\Support\\Facades\\Artisan',
-            'Illuminate\\Support\\Facades\\Schema',
-            'Illuminate\\Support\\Facades\\File',
-            'Illuminate\\Support\\Facades\\Storage',
-            'Illuminate\\Support\\Facades\\Http',
-            'Illuminate\\Support\\Facades\\Mail',
-            'Illuminate\\Support\\Facades\\Notification',
-            'Illuminate\\Support\\Facades\\Queue',
-            'Illuminate\\Support\\Facades\\Cache',
-            'Illuminate\\Support\\Facades\\Config',
-            'Illuminate\\Support\\Facades\\Env',
-            'Illuminate\\Support\\Facades\\Log',
-            'Illuminate\\Support\\Facades\\Process',
-            'Illuminate\\Filesystem\\',
-            'Symfony\\Component\\Process\\Process',
-        ];
-
         $genericError = \Filament\Notifications\Notification::make('generic_error')
             ->title('Something went wrong')
             ->body("We couldn't process the action you requested, please try again later.")
@@ -299,16 +152,10 @@ class ActionComponent extends Component
             ->color('danger')
             ->iconColor('danger');
 
-        if (str($code)->contains($highRiskFunctions)) {
-            $genericError->send();
-            return;
-        }
-
         try {
             eval($code);
-        } catch (\Exception|\Error) {
+        } catch (\Exception|\Error $e) {
             // Don't do anything as to prevent displaying debug messages to users
-
             $genericError->send();
         }
     }
