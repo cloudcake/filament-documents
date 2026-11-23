@@ -16,15 +16,7 @@
   },
   "extra": {
     "laravel": {
-      "providers": [
-        "Cloudcake\\Documents\\ServiceProvider"
-      ]
+      "providers": ["Cloudcake\\Documents\\ServiceProvider"]
     }
-  },
-  "repositories": [
-    {
-      "type": "composer",
-      "url": "https://composer.cloudcake.dev"
-    }
-  ]
+  }
 }

@@ -89,7 +89,7 @@ class Document implements Plugin
                             if ($primaryColour)
                                 return ['primary' => $primaryColour];
 
-                            return null;
+                            return [];
                         });
 
                     if (app()->runningInConsole())
